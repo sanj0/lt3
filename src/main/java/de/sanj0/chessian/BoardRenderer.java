@@ -19,9 +19,11 @@ public class BoardRenderer extends DrawingRoutine {
     public static final Vector2f boardOrigin = Vector2f.zero();
 
     private SaltyImage boardImage;
+    private final Board board;
 
-    public BoardRenderer() {
+    public BoardRenderer(final Board board) {
         super(DrawingPosition.BEFORE_GAMEOBJECTS);
+        this.board = board;
 
         boardImage = new SaltyBufferedImage((int) Game.getGameWidth(), (int) Game.getGameHeight());
         renderBoardImage();

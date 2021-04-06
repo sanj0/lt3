@@ -16,7 +16,7 @@ public class Main {
         setDrawFPS(false);
         getHostAsDisplayManager().getDisplay().setResizable(false);
 
-        chessScene = new ChessScene();
+        chessScene = new ChessScene(Board.fromFEN(FENParser.STARTING_POSITION));
         start(30, chessScene);
     }
 }
