@@ -10,8 +10,8 @@ public class BoardUtils {
      * index in the following form:
      * <br>[file_name][rank]
      * <p>
-     * e.g. 0 -> a1
-     * <br> 28 -> e4
+     * e.g. 0 - a1
+     * <br> 28 - e4
      *
      * @param index the index of a square
      * @return the algebraic square notation of the square at the given index
