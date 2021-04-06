@@ -6,6 +6,7 @@ import de.edgelord.saltyengine.gameobject.DrawingRoutine;
 import de.edgelord.saltyengine.graphics.image.SaltyBufferedImage;
 import de.edgelord.saltyengine.graphics.image.SaltyImage;
 import de.edgelord.saltyengine.transform.Dimensions;
+import de.edgelord.saltyengine.transform.Transform;
 import de.edgelord.saltyengine.transform.Vector2f;
 
 import java.awt.*;
@@ -13,8 +14,9 @@ import java.awt.*;
 // renders the board and the pieces
 public class BoardRenderer extends DrawingRoutine {
 
-    public static Color LIGHT_COLOR = new Color(98, 111, 123);
-    public static Color DARK_COLOR = new Color(16, 28, 43);
+    public static Color LIGHT_COLOR = new Color(198, 215, 240);
+    public static Color DARK_COLOR = new Color(58, 80, 118);
+
     public static final Dimensions SQUARE_SIZE = new Dimensions(Main.GAME_WIDTH / 8f, Main.GAME_HEIGHT / 8f);
     public static final Vector2f boardOrigin = Vector2f.zero();
 
@@ -30,8 +32,33 @@ public class BoardRenderer extends DrawingRoutine {
     }
 
     @Override
-    public void draw(final SaltyGraphics saltyGraphics) {
-        saltyGraphics.drawImage(boardImage, boardOrigin);
+    public void draw(final SaltyGraphics g) {
+        g.drawImage(boardImage, boardOrigin);
+
+        final byte[] position = board.getData();
+        float x = boardOrigin.getX();
+        float y = boardOrigin.getY();
+        float width = SQUARE_SIZE.getWidth();
+        float height = SQUARE_SIZE.getHeight();
+        for (int i = 0; i < position.length; i++) {
+            final byte piece = position[i];
+
+            // last move
+
+            // skipp dragged piece
+            PieceRenderer.drawPiece(g.copy(), piece, new Transform(x, y, width, height));
+
+            // update x and y
+            if ((i + 1) % 8 == 0) {
+                x = boardOrigin.getX();
+                y += height;
+            } else {
+                x += width;
+            }
+        }
+
+        // draw marks and arrows
+        // and dragged piece
     }
 
     private void renderBoardImage() {
