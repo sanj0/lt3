@@ -2,10 +2,10 @@ package de.sanj0.chessian;
 
 import de.edgelord.saltyengine.input.MouseInputAdapter;
 import de.edgelord.saltyengine.transform.Vector2f;
+import de.sanj0.chessian.move.MoveGenerator;
+import de.sanj0.chessian.utils.ChessianUtils;
 
 import java.awt.event.MouseEvent;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class MouseInput extends MouseInputAdapter {
 
@@ -19,9 +19,11 @@ public class MouseInput extends MouseInputAdapter {
     public void mousePressed(final MouseEvent e) {
         final Vector2f cursor = cursorPosition(e);
         final MoveState moveState = owner.getBoardRenderer().getMoveState();
-        moveState.setDraggedPieceIndex(MoveState.hoveredSquare(cursor));
+        final int piece = MoveState.hoveredSquare(cursor);
+        moveState.setDraggedPieceIndex(piece);
         // replace with legal move generation
-        moveState.setLegalDestinationSquares(IntStream.range(0, 64).boxed().collect(Collectors.toList()));
+        moveState.setLegalDestinationSquares(
+                ChessianUtils.movesToDestinationList(MoveGenerator.generatePseudoLegalMoves(piece, owner.getBoard())));
     }
 
     @Override
