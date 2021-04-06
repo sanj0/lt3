@@ -26,12 +26,12 @@ public class BoardRenderer extends DrawingRoutine {
 
     private SaltyImage boardImage;
     private final Board board;
-    private final MoveState moveState;
+    private final PlayerMoveState playerMoveState;
 
     public BoardRenderer(final Board board) {
         super(DrawingPosition.BEFORE_GAMEOBJECTS);
         this.board = board;
-        this.moveState = new MoveState();
+        this.playerMoveState = new PlayerMoveState(board.getColorToStart());
 
         boardImage = new SaltyBufferedImage((int) Game.getGameWidth(), (int) Game.getGameHeight());
         renderBoardImage();
@@ -44,7 +44,7 @@ public class BoardRenderer extends DrawingRoutine {
         // draw square marks
 
         g.setColor(LEGAL_MOVES_COLOR);
-        for (final int legalMove : moveState.getLegalDestinationSquares()) {
+        for (final int legalMove : playerMoveState.getLegalDestinationSquares()) {
             final int file = legalMove / 8;
             final int rank = legalMove - file * 8;
             g.drawRect(boardOrigin.getX() + rank * SQUARE_SIZE.getWidth(),
@@ -63,7 +63,7 @@ public class BoardRenderer extends DrawingRoutine {
             // last move
 
             // skipp dragged piece
-            if (i != moveState.getDraggedPieceIndex()) {
+            if (i != playerMoveState.getDraggedPieceIndex()) {
                 PieceRenderer.drawPiece(g.copy(), piece, new Transform(x, y, width, height));
             }
 
@@ -78,10 +78,10 @@ public class BoardRenderer extends DrawingRoutine {
 
         // draw marks and arrows
         // and dragged piece
-        if (moveState.getDraggedPieceIndex() != -1) {
+        if (playerMoveState.getDraggedPieceIndex() != -1) {
             final Vector2f cursor = Input.getCursorPosition();
             final Vector2f centre = cursor.subtracted(SQUARE_SIZE_DIV2.toVector2f());
-            PieceRenderer.drawPiece(g.copy(), position[moveState.getDraggedPieceIndex()], new Transform(centre, SQUARE_SIZE));
+            PieceRenderer.drawPiece(g.copy(), position[playerMoveState.getDraggedPieceIndex()], new Transform(centre, SQUARE_SIZE));
         }
     }
 
@@ -129,11 +129,11 @@ public class BoardRenderer extends DrawingRoutine {
     }
 
     /**
-     * Gets {@link #moveState}.
+     * Gets {@link #playerMoveState}.
      *
-     * @return the value of {@link #moveState}
+     * @return the value of {@link #playerMoveState}
      */
-    public MoveState getMoveState() {
-        return moveState;
+    public PlayerMoveState getMoveState() {
+        return playerMoveState;
     }
 }

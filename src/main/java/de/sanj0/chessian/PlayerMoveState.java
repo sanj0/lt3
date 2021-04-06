@@ -6,11 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 // states of user input to handle piece dragging
-public class MoveState {
+public class PlayerMoveState {
     private int draggedPieceIndex = -1;
     private List<Integer> legalDestinationSquares = new ArrayList<>();
+    private byte colorToMove;
 
-    public MoveState() {
+    public PlayerMoveState(final byte colorToMove) {
+        this.colorToMove = colorToMove;
+    }
+
+    public void nextTurn() {
+        colorToMove = Pieces.oppositeColor(colorToMove);
     }
 
     /**
@@ -60,5 +66,23 @@ public class MoveState {
      */
     public void setLegalDestinationSquares(final List<Integer> legalDestinationSquares) {
         this.legalDestinationSquares = legalDestinationSquares;
+    }
+
+    /**
+     * Gets {@link #colorToMove}.
+     *
+     * @return the value of {@link #colorToMove}
+     */
+    public byte getColorToMove() {
+        return colorToMove;
+    }
+
+    /**
+     * Sets {@link #colorToMove}.
+     *
+     * @param colorToMove the new value of {@link #colorToMove}
+     */
+    public void setColorToMove(final byte colorToMove) {
+        this.colorToMove = colorToMove;
     }
 }

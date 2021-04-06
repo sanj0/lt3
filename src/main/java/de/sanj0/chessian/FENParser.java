@@ -14,6 +14,12 @@ public class FENParser {
     public static final char LC_QUEEN = 'q';
     public static final char LC_KING = 'k';
 
+    public static final String LC_WHITE = "w";
+    public static final String LC_BLACK = "b";
+
+    private static final String PART_POSITION = "position";
+    private static final String PART_COLOR = "color";
+
     /**
      * Pareses the given FEN position
      * into a board position stored in
@@ -23,18 +29,22 @@ public class FENParser {
      * @return the board position as a byte array length 64 as
      * specified by the given FEN string
      */
-    public static byte[] parseFEN(final String FEN) {
-        final String positionString = FEN.split(" ")[0];
-        final byte[] board = new byte[64];
+    public static Board parseFEN(final String FEN) {
+        final String[] parts = FEN.split(" ");
+        final String positionString = parts[0];
+        final String startingColor = parts.length >= 2 ? parts[1] : LC_WHITE;
+
+        final byte[] data = new byte[64];
         int pointer = 0;
+        byte colorToStart;
 
         for (final char c : positionString.toCharArray()) {
             if (pointer >= 64) {
-                throw new InvalidFENException(positionString);
+                throw new InvalidFENException(PART_POSITION, positionString);
             }
             if (Character.isLetter(c)) {
                 // piece
-                board[pointer] = pieceFromFEN(c);
+                data[pointer] = pieceFromFEN(c);
                 pointer++;
             } else if (Character.isDigit(c)) {
                 // pointer advance
@@ -43,10 +53,18 @@ public class FENParser {
         }
 
         if (pointer != 64) {
-            throw new InvalidFENException(positionString);
+            throw new InvalidFENException(PART_POSITION, positionString);
         }
 
-        return board;
+        if (startingColor.equals(LC_WHITE)) {
+            colorToStart = LIGHT;
+        } else if (startingColor.equals(LC_BLACK)) {
+            colorToStart = DARK;
+        } else {
+            throw new InvalidFENException(PART_COLOR, startingColor);
+        }
+
+        return new Board(data, colorToStart);
     }
 
     public static byte pieceFromFEN(final char piece) {

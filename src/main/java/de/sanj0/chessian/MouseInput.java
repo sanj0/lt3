@@ -19,25 +19,29 @@ public class MouseInput extends MouseInputAdapter {
     @Override
     public void mousePressed(final MouseEvent e) {
         final Vector2f cursor = cursorPosition(e);
-        final MoveState moveState = owner.getBoardRenderer().getMoveState();
-        final int piece = MoveState.hoveredSquare(cursor);
-        moveState.setDraggedPieceIndex(piece);
-        // replace with legal move generation
-        moveState.setLegalDestinationSquares(
-                ChessianUtils.movesToDestinationList(MoveGenerator.generatePseudoLegalMoves(piece, owner.getBoard())));
+        final PlayerMoveState playerMoveState = owner.getBoardRenderer().getMoveState();
+        final int piece = PlayerMoveState.hoveredSquare(cursor);
+
+        if (Pieces.color(owner.getBoard().get(piece)) == playerMoveState.getColorToMove()) {
+            playerMoveState.setDraggedPieceIndex(piece);
+            // replace with legal move generation
+            playerMoveState.setLegalDestinationSquares(
+                    ChessianUtils.movesToDestinationList(MoveGenerator.generatePseudoLegalMoves(piece, owner.getBoard())));
+        }
     }
 
     @Override
     public void mouseReleased(final MouseEvent e) {
         final Vector2f cursor = cursorPosition(e);
-        final MoveState moveState = owner.getBoardRenderer().getMoveState();
-        final int destination = MoveState.hoveredSquare(cursor);
-        if (moveState.getDraggedPieceIndex() != destination &&
-                moveState.getLegalDestinationSquares().contains(destination)) {
+        final PlayerMoveState playerMoveState = owner.getBoardRenderer().getMoveState();
+        final int destination = PlayerMoveState.hoveredSquare(cursor);
+        if (playerMoveState.getDraggedPieceIndex() != destination &&
+                playerMoveState.getLegalDestinationSquares().contains(destination)) {
             // do the move!
             // for now, simply replace piece values
-            owner.getBoard().set(destination, owner.getBoard().get(moveState.getDraggedPieceIndex()));
-            owner.getBoard().set(moveState.getDraggedPieceIndex(), Pieces.NONE);
+            owner.getBoard().set(destination, owner.getBoard().get(playerMoveState.getDraggedPieceIndex()));
+            owner.getBoard().set(playerMoveState.getDraggedPieceIndex(), Pieces.NONE);
+            playerMoveState.nextTurn();
         }
 
         owner.getBoardRenderer().getMoveState().setDraggedPieceIndex(-1);
