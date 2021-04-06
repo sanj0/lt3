@@ -1,17 +1,96 @@
 package de.sanj0.chessian.move;
 
 import de.sanj0.chessian.Board;
+import de.sanj0.chessian.Pieces;
 import de.sanj0.chessian.utils.BishopMovesHelper;
+import de.sanj0.chessian.utils.BoardUtils;
 import de.sanj0.chessian.utils.PawnMovesHelper;
 import de.sanj0.chessian.utils.RookMovesHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static de.sanj0.chessian.Pieces.*;
 
 // generates moves!
 public class MoveGenerator {
+
+    // not to be used in bulks, only for user moves as generated
+    // responses are wasted!
+    // refer to method withoutIllegalMoves for further info
+    public static List<Move> generateLegalMoves(final int myIndex, final Board board) {
+        final List<Move> plMoves = generatePseudoLegalMoves(myIndex, board);
+        final List<Move> legalMoves = new ArrayList<>(plMoves.size());
+        withoutIllegalMoves(plMoves, legalMoves, myIndex, board);
+
+        return legalMoves;
+    }
+
+    /**
+     * Filters out the moves that would result
+     * in a self check and are thus illegal and
+     * adds every move that doesn't (i.e. the legal moves)
+     * in the given List.
+     * Returns a list of all possible, pseudo legal responses to every
+     * of the given moves because they are generated to check
+     * legality anyway.
+     *
+     * @param plMoves the list of pseudo legal moves
+     * @param legalMoves the list to store the legal moves in - should be initialized
+     *                   with the same size as {@code plMoves}
+     * @param myIndex the index of the piece the moves are from
+     * @param board the board
+     * @return a list of all possible responses to every given pseudo-legal move as
+     * they are needed to be generated for filtering anyway
+     */
+    public static Map<Move, List<Move>> withoutIllegalMoves(final List<Move> plMoves, final List<Move> legalMoves, final int myIndex, final Board board) {
+        final int plMovesSize = plMoves.size();
+        final Map<Move, List<Move>> plResponses = new HashMap<>(plMovesSize);
+
+        final byte myColor = color(board.get(myIndex));
+        final byte enemyColor = Pieces.oppositeColor(myColor);
+        final int kingBefore = BoardUtils.kingPosition(board, myColor);
+
+        for (int i = 0; i < plMovesSize; i++) {
+            final Move m = plMoves.get(i);
+            final byte movedPiece = board.get(m.getStart());
+            final int king = Pieces.isKing(movedPiece) ? m.getEnd() : kingBefore;
+            final Board now = board.afterMove(m);
+            final List<Move> plR = generateAllPLMoves(now, enemyColor);
+            final int plRSize = plR.size();
+
+            boolean legal = true;
+            for (int ii = 0; ii < plRSize; ii++) {
+                final Move r = plR.get(ii);
+                if (r.getEnd() == king) {
+                    legal = false;
+                    break;
+                }
+            }
+            if (legal) {
+                legalMoves.add(m);
+            }
+            plResponses.put(m, plR);
+        }
+
+        return plResponses;
+    }
+
+    public static List<Move> generateAllPLMoves(final Board board, final byte color) {
+        final List<Move> moves = new ArrayList<>(40);
+        final byte[] data = board.getData();
+
+        for (int i = 0; i < data.length; i++) {
+            byte piece = data[i];
+            if (Pieces.color(piece) == color) {
+                moves.addAll(generatePseudoLegalMoves(i, board));
+            }
+        }
+
+        return moves;
+    }
 
     // moves that could be illegal due to check
     public static List<Move> generatePseudoLegalMoves(final int myIndex, final Board board) {

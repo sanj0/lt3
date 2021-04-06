@@ -1,5 +1,7 @@
 package de.sanj0.chessian.move;
 
+import java.util.Objects;
+
 // a move that only stores start and end index
 // a more elaborate implementation is needed for
 // undoing and redoing moves
@@ -34,5 +36,18 @@ public class Move {
      */
     public int getEnd() {
         return end;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Move move = (Move) o;
+        return start == move.start && end == move.end;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end);
     }
 }

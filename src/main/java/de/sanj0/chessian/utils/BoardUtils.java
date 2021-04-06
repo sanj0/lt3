@@ -1,5 +1,8 @@
 package de.sanj0.chessian.utils;
 
+import de.sanj0.chessian.Board;
+import de.sanj0.chessian.Pieces;
+
 // static utility functions for the chess board
 public class BoardUtils {
 
@@ -50,5 +53,20 @@ public class BoardUtils {
             throw new IllegalArgumentException("file has to be between 0 and 7 (inclusive)");
         }
         return FILES[file];
+    }
+
+    public static int kingPosition(final Board board, final byte myColor) {
+        final byte[] data = board.getData();
+
+        for (int i = 0; i < data.length; i++) {
+            byte piece = data[i];
+            if (Pieces.isKing(piece) && Pieces.color(piece) == myColor) {
+                return i;
+            }
+        }
+
+        // should theoretically never be reached as a move capturing the king
+        // should never be legal
+        return -1;
     }
 }

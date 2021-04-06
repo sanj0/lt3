@@ -1,5 +1,7 @@
 package de.sanj0.chessian;
 
+import de.sanj0.chessian.move.Move;
+
 import java.util.Arrays;
 
 // a chess board!
@@ -14,6 +16,14 @@ public class Board {
         }
         this.data = data;
         this.colorToStart = colorToStart;
+    }
+
+    public Board afterMove(final Move m) {
+        final byte[] newData = Arrays.copyOf(data, data.length);
+        newData[m.getStart()] = Pieces.NONE;
+        newData[m.getEnd()] = data[m.getStart()];
+
+        return new Board(newData, colorToStart);
     }
 
     // loads a board from the given fen

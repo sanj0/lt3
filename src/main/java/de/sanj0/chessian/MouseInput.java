@@ -2,6 +2,7 @@ package de.sanj0.chessian;
 
 import de.edgelord.saltyengine.input.MouseInputAdapter;
 import de.edgelord.saltyengine.transform.Vector2f;
+import de.sanj0.chessian.move.Move;
 import de.sanj0.chessian.move.MoveGenerator;
 import de.sanj0.chessian.utils.ChessianUtils;
 
@@ -26,7 +27,7 @@ public class MouseInput extends MouseInputAdapter {
             playerMoveState.setDraggedPieceIndex(piece);
             // replace with legal move generation
             playerMoveState.setLegalDestinationSquares(
-                    ChessianUtils.movesToDestinationList(MoveGenerator.generatePseudoLegalMoves(piece, owner.getBoard())));
+                    ChessianUtils.movesToDestinationList(MoveGenerator.generateLegalMoves(piece, owner.getBoard())));
         }
     }
 
@@ -39,8 +40,9 @@ public class MouseInput extends MouseInputAdapter {
                 playerMoveState.getLegalDestinationSquares().contains(destination)) {
             // do the move!
             // for now, simply replace piece values
-            owner.getBoard().set(destination, owner.getBoard().get(playerMoveState.getDraggedPieceIndex()));
-            owner.getBoard().set(playerMoveState.getDraggedPieceIndex(), Pieces.NONE);
+            owner.getBoard().setData(owner.getBoard().afterMove(
+                    new Move(playerMoveState.getDraggedPieceIndex(), destination)).
+                    getData());
             playerMoveState.nextTurn();
         }
 
