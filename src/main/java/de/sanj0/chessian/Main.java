@@ -9,10 +9,14 @@ public class Main {
     public static final float GAME_WIDTH = 800;
     public static final float GAME_HEIGHT = 800;
 
+    public static ChessScene chessScene;
+
     public static void main(String[] args) {
         init(GameConfig.config(GAME_WIDTH, GAME_HEIGHT, "Chessian", GameConfig.NO_FIXED_TICKS));
-        start(30);
         setDrawFPS(false);
         getHostAsDisplayManager().getDisplay().setResizable(false);
+
+        chessScene = new ChessScene();
+        start(30, chessScene);
     }
 }
