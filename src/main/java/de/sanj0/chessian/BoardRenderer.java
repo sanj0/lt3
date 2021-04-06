@@ -39,11 +39,24 @@ public class BoardRenderer extends DrawingRoutine {
         float width = SQUARE_SIZE.getWidth();
         float height = SQUARE_SIZE.getHeight();
         boolean isLight = true;
+        boolean drawRankOnNextSquare = true;
+        g.setFont(g.getFont().deriveFont(15f).deriveFont(Font.BOLD));
         for (int i = 0; i < 64; i++) {
             g.setColor(isLight ? LIGHT_COLOR : DARK_COLOR);
             g.drawRect(x, y, width, height);
 
+            if (drawRankOnNextSquare) {
+                g.setColor(isLight ? DARK_COLOR : LIGHT_COLOR);
+                g.drawText(BoardUtils.rank(i) + 1, x, y, SaltyGraphics.TextAnchor.TOP_LEFT_CORNER);
+                drawRankOnNextSquare = false;
+            }
+            if (i >= 56) {
+                g.setColor(isLight ? DARK_COLOR : LIGHT_COLOR);
+                g.drawText(BoardUtils.fileName(i), x + width, y + width, SaltyGraphics.TextAnchor.BOTTOM_RIGHT_CORNER);
+            }
+
             if ((i + 1) % 8 == 0) {
+                drawRankOnNextSquare = true;
                 x = 0;
                 y += height;
             } else {
