@@ -6,6 +6,7 @@ import de.sanj0.chessian.move.MoveGenerator;
 import de.sanj0.chessian.utils.ChessianUtils;
 
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class MouseInput extends MouseInputAdapter {
 
@@ -40,6 +41,7 @@ public class MouseInput extends MouseInputAdapter {
         }
 
         owner.getBoardRenderer().getMoveState().setDraggedPieceIndex(-1);
+        owner.getBoardRenderer().getMoveState().setLegalDestinationSquares(new ArrayList<>());
     }
 
     private Vector2f cursorPosition(final MouseEvent e) {
