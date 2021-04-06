@@ -18,6 +18,7 @@ public class BoardRenderer extends DrawingRoutine {
 
     public static Color LIGHT_COLOR = new Color(198, 215, 240);
     public static Color DARK_COLOR = new Color(58, 80, 118);
+    public static Color LEGAL_MOVES_COLOR = new Color(252, 77, 108, 127);
 
     public static final Dimensions SQUARE_SIZE = new Dimensions(Main.GAME_WIDTH / 8f, Main.GAME_HEIGHT / 8f);
     public static final Dimensions SQUARE_SIZE_DIV2 = new Dimensions(Main.GAME_WIDTH / 16f, Main.GAME_HEIGHT / 16f);
@@ -39,6 +40,17 @@ public class BoardRenderer extends DrawingRoutine {
     @Override
     public void draw(final SaltyGraphics g) {
         g.drawImage(boardImage, boardOrigin);
+
+        // draw square marks
+
+        g.setColor(LEGAL_MOVES_COLOR);
+        for (final int legalMove : moveState.getLegalDestinationSquares()) {
+            final int file = legalMove / 8;
+            final int rank = legalMove - file * 8;
+            g.drawRect(boardOrigin.getX() + rank * SQUARE_SIZE.getWidth(),
+                    boardOrigin.getY() + file * SQUARE_SIZE.getHeight(),
+                    SQUARE_SIZE.getWidth(), SQUARE_SIZE.getHeight());
+        }
 
         final byte[] position = board.getData();
         float x = boardOrigin.getX();
