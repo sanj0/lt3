@@ -9,6 +9,7 @@ import de.edgelord.saltyengine.input.Input;
 import de.edgelord.saltyengine.transform.Dimensions;
 import de.edgelord.saltyengine.transform.Transform;
 import de.edgelord.saltyengine.transform.Vector2f;
+import de.sanj0.chessian.utils.BoardUtils;
 
 import java.awt.*;
 

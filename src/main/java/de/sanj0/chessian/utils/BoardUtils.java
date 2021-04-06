@@ -1,4 +1,4 @@
-package de.sanj0.chessian;
+package de.sanj0.chessian.utils;
 
 // static utility functions for the chess board
 public class BoardUtils {

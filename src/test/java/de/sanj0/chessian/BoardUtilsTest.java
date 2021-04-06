@@ -1,5 +1,7 @@
 package de.sanj0.chessian;
 
+import de.sanj0.chessian.utils.BoardUtils;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardUtilsTest {
