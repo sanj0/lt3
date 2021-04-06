@@ -5,6 +5,7 @@ import de.edgelord.saltyengine.core.graphics.SaltyGraphics;
 import de.edgelord.saltyengine.gameobject.DrawingRoutine;
 import de.edgelord.saltyengine.graphics.image.SaltyBufferedImage;
 import de.edgelord.saltyengine.graphics.image.SaltyImage;
+import de.edgelord.saltyengine.input.Input;
 import de.edgelord.saltyengine.transform.Dimensions;
 import de.edgelord.saltyengine.transform.Transform;
 import de.edgelord.saltyengine.transform.Vector2f;
@@ -18,14 +19,17 @@ public class BoardRenderer extends DrawingRoutine {
     public static Color DARK_COLOR = new Color(58, 80, 118);
 
     public static final Dimensions SQUARE_SIZE = new Dimensions(Main.GAME_WIDTH / 8f, Main.GAME_HEIGHT / 8f);
+    public static final Dimensions SQUARE_SIZE_DIV2 = new Dimensions(Main.GAME_WIDTH / 16f, Main.GAME_HEIGHT / 16f);
     public static final Vector2f boardOrigin = Vector2f.zero();
 
     private SaltyImage boardImage;
     private final Board board;
+    private final MoveState moveState;
 
     public BoardRenderer(final Board board) {
         super(DrawingPosition.BEFORE_GAMEOBJECTS);
         this.board = board;
+        this.moveState = new MoveState();
 
         boardImage = new SaltyBufferedImage((int) Game.getGameWidth(), (int) Game.getGameHeight());
         renderBoardImage();
@@ -46,7 +50,9 @@ public class BoardRenderer extends DrawingRoutine {
             // last move
 
             // skipp dragged piece
-            PieceRenderer.drawPiece(g.copy(), piece, new Transform(x, y, width, height));
+            if (i != moveState.getDraggedPieceIndex()) {
+                PieceRenderer.drawPiece(g.copy(), piece, new Transform(x, y, width, height));
+            }
 
             // update x and y
             if ((i + 1) % 8 == 0) {
@@ -59,6 +65,11 @@ public class BoardRenderer extends DrawingRoutine {
 
         // draw marks and arrows
         // and dragged piece
+        if (moveState.getDraggedPieceIndex() != -1) {
+            final Vector2f cursor = Input.getCursorPosition();
+            final Vector2f centre = cursor.subtracted(SQUARE_SIZE_DIV2.toVector2f());
+            PieceRenderer.drawPiece(g.copy(), position[moveState.getDraggedPieceIndex()], new Transform(centre, SQUARE_SIZE));
+        }
     }
 
     private void renderBoardImage() {
@@ -102,5 +113,14 @@ public class BoardRenderer extends DrawingRoutine {
      */
     public Board getBoard() {
         return board;
+    }
+
+    /**
+     * Gets {@link #moveState}.
+     *
+     * @return the value of {@link #moveState}
+     */
+    public MoveState getMoveState() {
+        return moveState;
     }
 }

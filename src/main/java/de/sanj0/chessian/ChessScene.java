@@ -1,5 +1,6 @@
 package de.sanj0.chessian;
 
+import de.edgelord.saltyengine.input.Input;
 import de.edgelord.saltyengine.scene.Scene;
 
 // the main scene in which to play chess
@@ -17,6 +18,7 @@ public class ChessScene extends Scene {
 
     @Override
     public void initialize() {
+        Input.addMouseInputHandler(new MouseInput(this));
         addDrawingRoutine(boardRenderer);
     }
 
