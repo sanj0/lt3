@@ -67,4 +67,13 @@ public class BoardRenderer extends DrawingRoutine {
             }
         }
     }
+
+    /**
+     * Gets {@link #board}.
+     *
+     * @return the value of {@link #board}
+     */
+    public Board getBoard() {
+        return board;
+    }
 }
