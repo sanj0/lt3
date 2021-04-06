@@ -20,6 +20,30 @@ public class Board {
     }
 
     /**
+     * Gets the piece at the given index.
+     *
+     * @param index an index
+     * @return the piece at the given index
+     */
+    public byte get(final int index) {
+        return data[index];
+    }
+
+    /**
+     * Sets the piece at the given index to the given value
+     * and returns the former value.
+     *
+     * @param index an index in the board array
+     * @param piece a piece to be placed at the index
+     * @return the former piece at the given index
+     */
+    public byte set(final int index, final byte piece) {
+        final byte former = data[index];
+        data[index] = piece;
+        return former;
+    }
+
+    /**
      * Gets {@link #data}.
      *
      * @return the value of {@link #data}
