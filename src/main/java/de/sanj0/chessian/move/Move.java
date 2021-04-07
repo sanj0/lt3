@@ -22,6 +22,12 @@ public class Move {
         return new FancyMove(start, end, board[end]);
     }
 
+    public boolean isPromotion(final Board board) {
+        final byte me = board.get(start);
+        final int promotionRank = Pieces.color(me) == Pieces.LIGHT ? 7 : 0;
+        return Pieces.isPawn(me) && BoardUtils.rank(end) == promotionRank;
+    }
+
     public int rating(final Board board) {
         final byte capture = board.get(end);
         if (capture == Pieces.NONE) {

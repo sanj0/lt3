@@ -36,7 +36,7 @@ public class Board {
         final byte me = data[m.getStart()];
         final int start = m.getStart();
         newData[start] = Pieces.NONE;
-        newData[m.getEnd()] = me;
+        newData[m.getEnd()] = m.isPromotion(this) ? Pieces.get(Pieces.QUEEN, Pieces.color(me)) : me;
 
         // castle and remove rights
         if (m instanceof CastleMove) {
