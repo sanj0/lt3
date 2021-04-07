@@ -2,6 +2,7 @@ package de.sanj0.chessian;
 
 import de.edgelord.saltyengine.input.Input;
 import de.edgelord.saltyengine.scene.Scene;
+import de.sanj0.chessian.input.MouseInput;
 
 // the main scene in which to play chess
 public class ChessScene extends Scene {

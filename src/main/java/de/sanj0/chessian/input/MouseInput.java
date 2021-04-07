@@ -1,7 +1,11 @@
-package de.sanj0.chessian;
+package de.sanj0.chessian.input;
 
 import de.edgelord.saltyengine.input.MouseInputAdapter;
 import de.edgelord.saltyengine.transform.Vector2f;
+import de.sanj0.chessian.ChessScene;
+import de.sanj0.chessian.Chessian;
+import de.sanj0.chessian.Pieces;
+import de.sanj0.chessian.PlayerMoveState;
 import de.sanj0.chessian.move.Move;
 import de.sanj0.chessian.move.MoveGenerator;
 import de.sanj0.chessian.utils.ChessianUtils;
