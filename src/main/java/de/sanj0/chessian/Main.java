@@ -16,7 +16,6 @@ public class Main {
     public static void main(String[] args) {
         init(GameConfig.config(GAME_WIDTH, GAME_HEIGHT, "Chessian", GameConfig.NO_FIXED_TICKS));
         setDrawFPS(false);
-        getHostAsDisplayManager().getDisplay().setResizable(false);
 
         if (args.length >= 1) {
             INIT_FEN = args[0];
