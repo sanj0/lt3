@@ -105,6 +105,10 @@ public class Move {
         return notEdgePawn + centrePawn + endgameModifier + doubleAdvanceCentreModifier + fianchetto;
     }
 
+    public boolean isPawnDoubleAdvance(final Board board) {
+        return Pieces.isPawn(board.get(start)) && Math.abs(start - end) == 16;
+    }
+
     public static Move empty() {
         return new Move(0, 0);
     }

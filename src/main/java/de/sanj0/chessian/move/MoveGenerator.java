@@ -180,7 +180,18 @@ public class MoveGenerator {
     }
 
     private static List<Move> generatePLPawnMoves(final int myIndex, final Board board, final byte myColor) {
-        return PawnMovesHelper.pseudoLegalMoves(board.getData(), myIndex, myColor);
+        final List<Move> moves = PawnMovesHelper.pseudoLegalMoves(board.getData(), myIndex, myColor);
+
+        int enPassant;
+        if ((enPassant = board.getEnPassant()) != -1) {
+            int diff = Math.abs(myIndex - enPassant);
+            if (diff == 7 || diff == 9) {
+                int takenPawn = myColor == LIGHT ? enPassant + 8 : enPassant - 8;
+                moves.add(new EnPassantMove(myIndex, enPassant, takenPawn));
+            }
+        }
+
+        return moves;
     }
 
     private static List<Move> generatePLQueenMoves(final int myIndex, final Board board, final byte myColor) {

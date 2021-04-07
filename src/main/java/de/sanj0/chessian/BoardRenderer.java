@@ -24,6 +24,7 @@ public class BoardRenderer extends DrawingRoutine {
 
     public static final Dimensions SQUARE_SIZE = new Dimensions(Main.GAME_WIDTH / 8f, Main.GAME_HEIGHT / 8f);
     public static final Dimensions SQUARE_SIZE_DIV2 = new Dimensions(Main.GAME_WIDTH / 16f, Main.GAME_HEIGHT / 16f);
+    private static final float EN_PASSANT_INDICATOR_SIZE = Main.GAME_WIDTH / 32f;
     public static final Vector2f boardOrigin = Vector2f.zero();
 
     private SaltyImage boardImage;
@@ -56,6 +57,17 @@ public class BoardRenderer extends DrawingRoutine {
             g.setColor(LAST_MOVE_COLOR);
             drawSquare(lastMove.getStart(), g);
             drawSquare(lastMove.getEnd(), g);
+        }
+
+        // draw en passant
+        int enPassant;
+        if ((enPassant = board.getEnPassant()) != -1) {
+            g.setColor(LEGAL_MOVES_COLOR);
+            final int file = enPassant / 8;
+            final int rank = enPassant - file * 8;
+            g.drawOval(boardOrigin.getX() + rank * SQUARE_SIZE.getWidth() + EN_PASSANT_INDICATOR_SIZE * 1.5f,
+                    boardOrigin.getY() + file * SQUARE_SIZE.getHeight() + EN_PASSANT_INDICATOR_SIZE * 1.5f,
+                    EN_PASSANT_INDICATOR_SIZE, EN_PASSANT_INDICATOR_SIZE);
         }
 
         final byte[] position = board.getData();

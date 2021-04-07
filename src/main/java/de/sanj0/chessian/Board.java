@@ -1,6 +1,7 @@
 package de.sanj0.chessian;
 
 import de.sanj0.chessian.move.CastleMove;
+import de.sanj0.chessian.move.EnPassantMove;
 import de.sanj0.chessian.move.Move;
 import de.sanj0.chessian.utils.CastleHelper;
 import de.sanj0.chessian.utils.ChessianUtils;
@@ -13,21 +14,25 @@ public class Board {
     private byte[] data;
     private final byte colorToStart;
     private Map<Byte, List<CastleHelper.Castle>> allowedCastles;
+    private int enPassant;
     private Move lastMove = null;
 
-    public Board(final byte[] data, final byte colorToStart, final Map<Byte, List<CastleHelper.Castle>> allowedCastles) {
+    public Board(final byte[] data, final byte colorToStart,
+                 final Map<Byte, List<CastleHelper.Castle>> allowedCastles, final int enPassant) {
         if (data.length != 64) {
             throw new IllegalArgumentException("chess board has to have 64 squares!");
         }
         this.data = data;
         this.colorToStart = colorToStart;
         this.allowedCastles = allowedCastles;
+        this.enPassant = enPassant;
     }
 
     public void doMove(final Move m) {
         final Board afterState = afterMove(m);
         data = afterState.data;
         allowedCastles = afterState.allowedCastles;
+        enPassant = afterState.enPassant;
         lastMove = m;
     }
 
@@ -37,6 +42,8 @@ public class Board {
         final Map<Byte, List<CastleHelper.Castle>> newAllowedCastles = ChessianUtils.copyCastleRightsMap(allowedCastles);
         final byte me = data[m.getStart()];
         final int start = m.getStart();
+        final int end = m.getEnd();
+        int newEnPassant = m.isPawnDoubleAdvance(this) ? Math.min(start, end) + 8 : -1;
         newData[start] = Pieces.NONE;
         newData[m.getEnd()] = m.isPromotion(this) ? Pieces.get(Pieces.QUEEN, Pieces.color(me)) : me;
 
@@ -46,6 +53,8 @@ public class Board {
             newData[rookMove.getStart()] = Pieces.NONE;
             newData[rookMove.getEnd()] = data[rookMove.getStart()];
             newAllowedCastles.put(Pieces.color(me), new ArrayList<>());
+        } else if (m instanceof EnPassantMove) {
+            newData[((EnPassantMove) m).getTakenPawn()] = Pieces.NONE;
         } else if (Pieces.isKing(me)) {
             newAllowedCastles.put(Pieces.color(me), new ArrayList<>());
         } else if (Pieces.isRook(me)) {
@@ -64,7 +73,7 @@ public class Board {
             }
         }
 
-        return new Board(newData, colorToStart, newAllowedCastles);
+        return new Board(newData, colorToStart, newAllowedCastles, newEnPassant);
     }
 
     // loads a board from the given fen
@@ -139,6 +148,24 @@ public class Board {
      */
     public void setAllowedCastles(final Map<Byte, List<CastleHelper.Castle>> allowedCastles) {
         this.allowedCastles = allowedCastles;
+    }
+
+    /**
+     * Gets {@link #enPassant}.
+     *
+     * @return the value of {@link #enPassant}
+     */
+    public int getEnPassant() {
+        return enPassant;
+    }
+
+    /**
+     * Sets {@link #enPassant}.
+     *
+     * @param enPassant the new value of {@link #enPassant}
+     */
+    public void setEnPassant(final int enPassant) {
+        this.enPassant = enPassant;
     }
 
     /**

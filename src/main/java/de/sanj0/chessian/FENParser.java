@@ -66,8 +66,8 @@ public class FENParser {
             throw new InvalidFENException(PART_COLOR, startingColor);
         }
 
-        //TODO: parse castles from FEN
-        return new Board(data, colorToStart, CastleHelper.ALL_CASTLES);
+        //TODO: parse castles and en passant from FEN
+        return new Board(data, colorToStart, CastleHelper.ALL_CASTLES, -1);
     }
 
     public static byte pieceFromFEN(final char piece) {
