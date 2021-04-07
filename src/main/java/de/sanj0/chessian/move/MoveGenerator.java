@@ -17,6 +17,20 @@ import static de.sanj0.chessian.Pieces.*;
 // generates moves!
 public class MoveGenerator {
 
+    public static List<Move> generateAllLegalMoves(final Board board, final byte color) {
+        final List<Move> moves = new ArrayList<>(40);
+        final byte[] data = board.getData();
+
+        for (int i = 0; i < data.length; i++) {
+            byte piece = data[i];
+            if (Pieces.color(piece) == color) {
+                moves.addAll(generateLegalMoves(i, board));
+            }
+        }
+
+        return moves;
+    }
+
     // not to be used in bulks, only for user moves as generated
     // responses are wasted!
     // refer to method withoutIllegalMoves for further info

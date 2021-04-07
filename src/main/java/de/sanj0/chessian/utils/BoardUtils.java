@@ -3,10 +3,65 @@ package de.sanj0.chessian.utils;
 import de.sanj0.chessian.Board;
 import de.sanj0.chessian.Pieces;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static de.sanj0.chessian.Pieces.*;
+
 // static utility functions for the chess board
 public class BoardUtils {
 
     private static final char[] FILES = "abcdefgh".toCharArray();
+    private static final int[] CENTRE_DISTANCE = {
+            3, 3, 3, 3, 3, 3, 3, 3,
+            3, 2, 2, 2, 2, 2, 2, 3,
+            3, 2, 1, 1, 1, 1, 2, 3,
+            3, 2, 1, 0, 0, 1, 2, 3,
+            3, 2, 1, 0, 0, 1, 2, 3,
+            3, 2, 1, 1, 1, 1, 2, 3,
+            3, 2, 2, 2, 2, 2, 2, 3,
+            3, 3, 3, 3, 3, 3, 3, 3
+    };
+    private static final int MAX_NUM_PIECES = 32;
+
+    private static Map<Byte, List<Integer>> STARTING_POSITIONS = new HashMap<>() {{
+        put(Pieces.get(PAWN, LIGHT), Arrays.asList(48, 49, 50, 51, 52, 53, 54, 55));
+        put(Pieces.get(KNIGHT, LIGHT), Arrays.asList(57, 62));
+        put(Pieces.get(BISHOP, LIGHT), Arrays.asList(58, 61));
+        put(Pieces.get(ROOK, LIGHT), Arrays.asList(56, 63));
+        put(Pieces.get(QUEEN, LIGHT), Arrays.asList(59));
+        put(Pieces.get(KING, LIGHT), Arrays.asList(60));
+        // dark
+        put(Pieces.get(PAWN, DARK), Arrays.asList(8, 9, 10, 11, 12, 13, 14, 15));
+        put(Pieces.get(KNIGHT, DARK), Arrays.asList(1, 6));
+        put(Pieces.get(BISHOP, DARK), Arrays.asList(2, 5));
+        put(Pieces.get(ROOK, DARK), Arrays.asList(0, 7));
+        put(Pieces.get(QUEEN, DARK), Arrays.asList(3));
+        put(Pieces.get(KING, DARK), Arrays.asList(4));
+    }};
+
+    public static List<Integer> startingPositions(final byte piece) {
+        return STARTING_POSITIONS.get(piece);
+    }
+
+    public static double endgame(final Board board) {
+        int numPieces = 0;
+        final byte[] data = board.getData();
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] != Pieces.NONE) {
+                numPieces++;
+            }
+        }
+
+        return numPieces == 0 ? 1 : 1 - (double) numPieces / MAX_NUM_PIECES;
+    }
+
+    // range: 0 - 3
+    public static int distanceFromCentre(final int position) {
+        return CENTRE_DISTANCE[position];
+    }
 
     /**
      * Returns the name of the square at the given

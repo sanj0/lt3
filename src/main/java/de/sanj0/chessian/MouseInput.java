@@ -44,6 +44,10 @@ public class MouseInput extends MouseInputAdapter {
                     new Move(playerMoveState.getDraggedPieceIndex(), destination)).
                     getData());
             playerMoveState.nextTurn();
+            final Move response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
+            // FIXME: code duplicate
+            owner.getBoard().setData(owner.getBoard().afterMove(response).getData());
+            playerMoveState.nextTurn();
         }
 
         owner.getBoardRenderer().getMoveState().setDraggedPieceIndex(-1);

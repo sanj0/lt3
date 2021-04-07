@@ -41,6 +41,27 @@ public class Pieces {
         return (byte) (piece & TYPE_MASK);
     }
 
+    public static int value(final byte piece) {
+        final byte type = type(piece);
+        if (type == PAWN) {
+            return 1;
+        } else if (type == KNIGHT || type == BISHOP) {
+            return 3;
+        } else if (type == ROOK) {
+            return 5;
+        } else if (type == QUEEN) {
+            return 8;
+        } else if (type == KING) {
+            return 0;
+        } else {
+            throw new IllegalArgumentException(piece + " is not a valid piece.");
+        }
+    }
+
+    public static int valueForRating(final byte piece) {
+        return value(piece) * 7;
+    }
+
     public static boolean isLight(final byte piece) {
         return color(piece) == LIGHT;
     }
