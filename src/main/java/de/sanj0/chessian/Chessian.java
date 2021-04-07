@@ -29,18 +29,16 @@ public class Chessian {
             List<Move> bestMoves = new ArrayList<>(candidates.size());
             for (final Move m : candidates) {
                 final int rating = rateMove(m, board, colorToMove, DEPTH, MoveGenerator.generateAllPLMoves(board.afterMove(m), enemyColor));
+                System.out.println(m.notation() + " > rated " + rating);
                 if (rating > maxRating) {
-                    System.out.println(m.notation() + " = " + rating + " which is a new max.");
                     maxRating = rating;
                     bestMoves = new ArrayList<>(candidates.size());
                     bestMoves.add(m);
                 } else if (rating == maxRating) {
                     bestMoves.add(m);
-                    System.out.println(m.notation() + " = " + rating + " and thus adds to the best moves.");
-                } else {
-                    System.out.println("bad move: " + m.notation() + " = " + rating);
                 }
             }
+            System.out.println("choosing a random move out of " + bestMoves.size() + " best moves...");
             System.out.println("---");
             return bestMoves.get(RNG.nextInt(bestMoves.size()));
         }

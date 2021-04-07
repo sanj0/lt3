@@ -19,7 +19,7 @@ public class CastleHelper {
                 return board.get(61) == Pieces.NONE && board.get(62) == Pieces.NONE;
             case QUEEN_SIDE_LIGHT:
                 return board.get(59) == Pieces.NONE && board.get(58) == Pieces.NONE
-                        && board.get(56) == Pieces.NONE;
+                        && board.get(57) == Pieces.NONE;
             case KING_SIDE_DARK:
                 return board.get(5) == Pieces.NONE && board.get(6) == Pieces.NONE;
             case QUEEN_SIDE_DARK:

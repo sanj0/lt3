@@ -93,7 +93,7 @@ public class Move {
     private int ratePawnAdvance(final Board board) {
         final int file = BoardUtils.file(start);
         int notEdgePawn = file > 1 && file < 6 ? 1 : 0;
-        int centrePawn = file > 2 && file < 5 ? 2 : 1;
+        int centrePawn = file > 2 && file < 5 ? 1 : 0;
         boolean doubleAdvance = Math.abs(start - end) == 16;
         boolean fianchettoPawn = file == 6 || file == 1;
         int fianchetto = fianchettoPawn && !doubleAdvance ? 1 : 0;
