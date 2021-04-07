@@ -15,6 +15,7 @@ import de.sanj0.chessian.utils.ChessianUtils;
 
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 public class MouseInput extends MouseInputAdapter {
 
@@ -51,9 +52,11 @@ public class MouseInput extends MouseInputAdapter {
             owner.getBoard().doMove(m);
             playerMoveState.nextTurn();
             if (owner.isAutoMove()) {
-                final Move response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
-                owner.getBoard().doMove(response);
-                playerMoveState.nextTurn();
+                CompletableFuture.runAsync(() -> {
+                    final Move response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
+                    owner.getBoard().doMove(response);
+                    playerMoveState.nextTurn();
+                });
             }
         }
 
