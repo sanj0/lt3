@@ -25,7 +25,7 @@ public class BoardRenderer extends DrawingRoutine {
     public static final Vector2f boardOrigin = Vector2f.zero();
 
     private SaltyImage boardImage;
-    private final Board board;
+    private Board board;
     private final PlayerMoveState playerMoveState;
 
     public BoardRenderer(final Board board) {
@@ -126,6 +126,15 @@ public class BoardRenderer extends DrawingRoutine {
      */
     public Board getBoard() {
         return board;
+    }
+
+    /**
+     * Sets {@link #board}.
+     *
+     * @param board the new value of {@link #board}
+     */
+    public void setBoard(final Board board) {
+        this.board = board;
     }
 
     /**

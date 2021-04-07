@@ -11,12 +11,20 @@ public class Main {
 
     public static ChessScene chessScene;
 
+    public static String INIT_FEN;
+
     public static void main(String[] args) {
         init(GameConfig.config(GAME_WIDTH, GAME_HEIGHT, "Chessian", GameConfig.NO_FIXED_TICKS));
         setDrawFPS(false);
         getHostAsDisplayManager().getDisplay().setResizable(false);
 
-        chessScene = new ChessScene(Board.fromFEN(FENParser.STARTING_POSITION));
+        if (args.length >= 1) {
+            INIT_FEN = args[0];
+        } else {
+            INIT_FEN = FENParser.STARTING_POSITION;
+        }
+
+        chessScene = new ChessScene(Board.fromFEN(INIT_FEN));
         start(30, chessScene);
     }
 }

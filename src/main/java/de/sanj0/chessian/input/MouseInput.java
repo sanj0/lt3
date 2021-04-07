@@ -44,14 +44,13 @@ public class MouseInput extends MouseInputAdapter {
                 playerMoveState.getLegalDestinationSquares().contains(destination)) {
             // do the move!
             // for now, simply replace piece values
-            owner.getBoard().setData(owner.getBoard().afterMove(
-                    new Move(playerMoveState.getDraggedPieceIndex(), destination)).
-                    getData());
+            owner.getBoard().doMove(new Move(playerMoveState.getDraggedPieceIndex(), destination));
             playerMoveState.nextTurn();
-            final Move response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
-            // FIXME: code duplicate
-            owner.getBoard().setData(owner.getBoard().afterMove(response).getData());
-            playerMoveState.nextTurn();
+            if (owner.isAutoMove()) {
+                final Move response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
+                owner.getBoard().doMove(response);
+                playerMoveState.nextTurn();
+            }
         }
 
         owner.getBoardRenderer().getMoveState().setDraggedPieceIndex(-1);

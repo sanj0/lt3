@@ -18,7 +18,13 @@ public class Board {
         this.colorToStart = colorToStart;
     }
 
+    public void doMove(final Move m) {
+        final Board afterState = afterMove(m);
+        data = afterState.getData();
+    }
+
     public Board afterMove(final Move m) {
+        // promotions, castles etc. here?
         final byte[] newData = Arrays.copyOf(data, data.length);
         newData[m.getStart()] = Pieces.NONE;
         newData[m.getEnd()] = data[m.getStart()];
