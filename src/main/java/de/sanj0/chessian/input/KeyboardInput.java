@@ -3,11 +3,12 @@ package de.sanj0.chessian.input;
 import de.edgelord.saltyengine.input.KeyboardInputAdapter;
 import de.sanj0.chessian.Board;
 import de.sanj0.chessian.ChessScene;
-import de.sanj0.chessian.Chessian;
+import de.sanj0.chessian.ai.Chessian;
 import de.sanj0.chessian.Main;
 import de.sanj0.chessian.move.Move;
 
 import java.awt.event.KeyEvent;
+import java.util.concurrent.ExecutionException;
 
 public class KeyboardInput extends KeyboardInputAdapter {
 
@@ -40,7 +41,12 @@ public class KeyboardInput extends KeyboardInputAdapter {
             owner.getBoardRenderer().getMoveState().setColorToMove(owner.getBoard().getColorToStart());
         } else if (e.getKeyChar() == 'm') {
             // make the AI make the next move
-            final Move response = Chessian.bestMove(board, owner.getBoardRenderer().getMoveState().getColorToMove());
+            Move response = null;
+            try {
+                response = Chessian.bestMove(board, owner.getBoardRenderer().getMoveState().getColorToMove());
+            } catch (ExecutionException | InterruptedException executionException) {
+                executionException.printStackTrace();
+            }
             board.doMove(response);
             owner.getBoardRenderer().getMoveState().nextTurn();
         } else if (e.getKeyChar() == 'a') {

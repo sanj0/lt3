@@ -6,7 +6,7 @@ import de.edgelord.saltyengine.input.MouseInputAdapter;
 import de.edgelord.saltyengine.transform.Vector2f;
 import de.edgelord.saltyengine.utils.GeneralUtil;
 import de.sanj0.chessian.ChessScene;
-import de.sanj0.chessian.Chessian;
+import de.sanj0.chessian.ai.Chessian;
 import de.sanj0.chessian.Pieces;
 import de.sanj0.chessian.PlayerMoveState;
 import de.sanj0.chessian.move.Move;
@@ -16,6 +16,7 @@ import de.sanj0.chessian.utils.ChessianUtils;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class MouseInput extends MouseInputAdapter {
 
@@ -53,7 +54,12 @@ public class MouseInput extends MouseInputAdapter {
             playerMoveState.nextTurn();
             if (owner.isAutoMove()) {
                 CompletableFuture.runAsync(() -> {
-                    final Move response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
+                    Move response = null;
+                    try {
+                        response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
+                    } catch (ExecutionException | InterruptedException executionException) {
+                        executionException.printStackTrace();
+                    }
                     owner.getBoard().doMove(response);
                     playerMoveState.nextTurn();
                 });
