@@ -20,6 +20,7 @@ public class BoardRenderer extends DrawingRoutine {
     public static Color LIGHT_COLOR = new Color(198, 215, 240);
     public static Color DARK_COLOR = new Color(58, 80, 118);
     public static Color LEGAL_MOVES_COLOR = new Color(252, 77, 108, 127);
+    public static Color LAST_MOVE_COLOR = new Color(66, 134, 56, 127);
 
     public static final Dimensions SQUARE_SIZE = new Dimensions(Main.GAME_WIDTH / 8f, Main.GAME_HEIGHT / 8f);
     public static final Dimensions SQUARE_SIZE_DIV2 = new Dimensions(Main.GAME_WIDTH / 16f, Main.GAME_HEIGHT / 16f);
@@ -47,11 +48,14 @@ public class BoardRenderer extends DrawingRoutine {
         g.setColor(LEGAL_MOVES_COLOR);
         for (final Move legalMove : playerMoveState.getLegalMoves()) {
             final int dst = legalMove.getEnd();
-            final int file = dst / 8;
-            final int rank = dst - file * 8;
-            g.drawRect(boardOrigin.getX() + rank * SQUARE_SIZE.getWidth(),
-                    boardOrigin.getY() + file * SQUARE_SIZE.getHeight(),
-                    SQUARE_SIZE.getWidth(), SQUARE_SIZE.getHeight());
+            drawSquare(dst, g);
+        }
+
+        Move lastMove;
+        if ((lastMove = board.getLastMove()) != null) {
+            g.setColor(LAST_MOVE_COLOR);
+            drawSquare(lastMove.getStart(), g);
+            drawSquare(lastMove.getEnd(), g);
         }
 
         final byte[] position = board.getData();
@@ -85,6 +89,14 @@ public class BoardRenderer extends DrawingRoutine {
             final Vector2f centre = cursor.subtracted(SQUARE_SIZE_DIV2.toVector2f());
             PieceRenderer.drawPiece(g.copy(), position[playerMoveState.getDraggedPieceIndex()], new Transform(centre, SQUARE_SIZE));
         }
+    }
+
+    private void drawSquare(final int square, final SaltyGraphics g) {
+        final int file = square / 8;
+        final int rank = square - file * 8;
+        g.drawRect(boardOrigin.getX() + rank * SQUARE_SIZE.getWidth(),
+                boardOrigin.getY() + file * SQUARE_SIZE.getHeight(),
+                SQUARE_SIZE.getWidth(), SQUARE_SIZE.getHeight());
     }
 
     private void renderBoardImage() {

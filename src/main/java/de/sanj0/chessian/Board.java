@@ -13,6 +13,7 @@ public class Board {
     private byte[] data;
     private final byte colorToStart;
     private Map<Byte, List<CastleHelper.Castle>> allowedCastles;
+    private Move lastMove = null;
 
     public Board(final byte[] data, final byte colorToStart, final Map<Byte, List<CastleHelper.Castle>> allowedCastles) {
         if (data.length != 64) {
@@ -27,6 +28,7 @@ public class Board {
         final Board afterState = afterMove(m);
         data = afterState.data;
         allowedCastles = afterState.allowedCastles;
+        lastMove = m;
     }
 
     public Board afterMove(final Move m) {
@@ -137,6 +139,24 @@ public class Board {
      */
     public void setAllowedCastles(final Map<Byte, List<CastleHelper.Castle>> allowedCastles) {
         this.allowedCastles = allowedCastles;
+    }
+
+    /**
+     * Gets {@link #lastMove}.
+     *
+     * @return the value of {@link #lastMove}
+     */
+    public Move getLastMove() {
+        return lastMove;
+    }
+
+    /**
+     * Sets {@link #lastMove}.
+     *
+     * @param lastMove the new value of {@link #lastMove}
+     */
+    public void setLastMove(final Move lastMove) {
+        this.lastMove = lastMove;
     }
 
     @Override
