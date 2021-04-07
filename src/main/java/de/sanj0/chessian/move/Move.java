@@ -41,38 +41,68 @@ public class Move {
         // if the piece is developed for the first time
         // it's a plus
         final byte me = board.get(start);
+        final int targetFile = BoardUtils.file(end);
+        final byte myColor = Pieces.color(me);
+        int centrePawnBlock = centrePawnBlock(board, targetFile, myColor);
+        int developmentBonus = 0;
+
         if (BoardUtils.startingPositions(me).contains(start)) {
             if (Pieces.type(me) == Pieces.QUEEN) {
-                return Math.min(2, 4 - BoardUtils.distanceFromCentre(end)) - 1;
+                developmentBonus = Math.min(2, 4 - BoardUtils.distanceFromCentre(end)) - 1;
             } else if (Pieces.type(me) == Pieces.PAWN) {
                 // better to develop centre pawns
-                return ratePawnAdvance(board);
+                developmentBonus = ratePawnAdvance(board);
             } else if (Pieces.type(me) == Pieces.KING) {
                 // don't develop the king
                 // - especially not to the centre of the board
                 if (this instanceof CastleMove) {
-                    return 5;
+                    developmentBonus = 5;
                 } else {
-                    return -6 + BoardUtils.distanceFromCentre(end);
+                    developmentBonus = -6 + BoardUtils.distanceFromCentre(end);
                 }
             } else if (Pieces.type(me) == Pieces.ROOK){
-                return BoardUtils.endgame(board) > .2 ? 0 : -1;
+                developmentBonus = BoardUtils.endgame(board) > .2 ? 0 : -1;
             } else {
-                return Math.max(2, 4 - BoardUtils.distanceFromCentre(end));
+                developmentBonus = Math.max(2, 4 - BoardUtils.distanceFromCentre(end));
+            }
+        }
+        return developmentBonus + centrePawnBlock;
+    }
+
+    private int centrePawnBlock(final Board board, final int targetFile, final byte myColor) {
+        final int centrePawnBlockTax = -2;
+
+        if (myColor == Pieces.LIGHT) {
+            if (checkFileAndPawn(board, targetFile, 3, 51)
+                    || checkFileAndPawn(board, targetFile, 4, 52)) {
+                return centrePawnBlockTax;
+            }
+        } else {
+            if (checkFileAndPawn(board, targetFile, 3, 11)
+                    || checkFileAndPawn(board, targetFile, 4, 12)) {
+                return centrePawnBlockTax;
             }
         }
         return 0;
     }
 
+    private boolean checkFileAndPawn(final Board board, final int targetFile, final int expectedFile, final int pawnPosition) {
+        return targetFile == expectedFile && Pieces.isPawn(board.get(pawnPosition));
+    }
+
     private int ratePawnAdvance(final Board board) {
         final int file = BoardUtils.file(start);
-        int centreModifier = file > 1 && file < 7 ? (file > 2 && file < 6 ? 2 : 1) : 0;
-        int doubleAdvanceCentreModifier = centreModifier > 0 && Math.abs(start - end) == 16
-                ? 2 : 0;
+        int notEdgePawn = file > 1 && file < 6 ? 2 : 1;
+        int centrePawn = file > 2 && file < 5 ? 2 : 1;
+        boolean doubleAdvance = Math.abs(start - end) == 16;
+        boolean fianchettoPawn = file == 6 || file == 1;
+        int fianchetto = fianchettoPawn && !doubleAdvance ? 1 : 0;
+        int doubleAdvanceCentreModifier = centrePawn + notEdgePawn > 2 && doubleAdvance
+                ? 1 : 0;
         double endgame = BoardUtils.endgame(board);
-        int endgameModifier = endgame > .5 ? (endgame > .65 ? 5 : 0) : -1;
+        int endgameModifier = endgame > .5 ? (endgame > .65 ? 4 : 0) : -1;
 
-        return centreModifier + endgameModifier + doubleAdvanceCentreModifier;
+        return notEdgePawn + centrePawn + endgameModifier + doubleAdvanceCentreModifier + fianchetto;
     }
 
     public static Move empty() {
