@@ -51,12 +51,12 @@ public class Move {
                 developmentBonus = Math.min(2, 4 - BoardUtils.distanceFromCentre(end)) - 1;
             } else if (Pieces.type(me) == Pieces.PAWN) {
                 // better to develop centre pawns
-                developmentBonus = ratePawnAdvance(board);
+                developmentBonus = Math.min(ratePawnAdvance(board), Pieces.valueForRating(Pieces.PAWN) - 1);
             } else if (Pieces.type(me) == Pieces.KING) {
                 // don't develop the king
                 // - especially not to the centre of the board
                 if (this instanceof CastleMove) {
-                    developmentBonus = 5;
+                    developmentBonus = Pieces.valueForRating(Pieces.PAWN) - 1;
                 } else {
                     developmentBonus = -6 + BoardUtils.distanceFromCentre(end);
                 }
@@ -93,7 +93,7 @@ public class Move {
     private int ratePawnAdvance(final Board board) {
         final int file = BoardUtils.file(start);
         int notEdgePawn = file > 1 && file < 6 ? 1 : 0;
-        int centrePawn = file > 2 && file < 5 ? 1 : 0;
+        int centrePawn = file > 2 && file < 5 ? 2 : 1;
         boolean doubleAdvance = Math.abs(start - end) == 16;
         boolean fianchettoPawn = file == 6 || file == 1;
         int fianchetto = fianchettoPawn && !doubleAdvance ? 1 : 0;
@@ -138,6 +138,23 @@ public class Move {
     public String notation() {
         // maybe insert x for takes - would require a board as an argument
         return BoardUtils.squareName(start) + BoardUtils.squareName(end);
+    }
+
+    public String extendedNotation(final Board board) {
+        final byte capture = board.get(end);
+        final byte me = board.get(start);
+        final char myLetter = Pieces.letter(me);
+
+        if (Pieces.isPawn(me)) {
+            if (capture != Pieces.NONE) {
+                return BoardUtils.fileName(start) + "x" + BoardUtils.squareName(end);
+            } else {
+                return BoardUtils.squareName(end);
+            }
+        } else {
+            return myLetter + BoardUtils.squareName(start)
+                    + (capture != Pieces.NONE ? "x" : "") + BoardUtils.squareName(end);
+        }
     }
 
     @Override

@@ -2,13 +2,15 @@ package de.sanj0.chessian;
 
 public class Pieces {
 
+    private static final char[] LETTERS = "_PNBRQK".toCharArray();
+
     public static final byte NONE = 0;
     public static final byte PAWN = 1;
     public static final byte KNIGHT = 2;
     public static final byte BISHOP = 3;
-    public static final byte ROOK = 5;
-    public static final byte QUEEN = 6;
-    public static final byte KING = 7;
+    public static final byte ROOK = 4;
+    public static final byte QUEEN = 5;
+    public static final byte KING = 6;
 
     public static final byte LIGHT = 8;
     public static final byte DARK = 16;
@@ -17,6 +19,10 @@ public class Pieces {
     public static final byte DARK_MASK = 0b10000;
     public static final byte LIGHT_MASK = 0b01000;
     public static final byte COLOR_MASK = (byte) (LIGHT_MASK | DARK_MASK);
+
+    public static char letter(final byte p) {
+        return LETTERS[type(p)];
+    }
 
     /**
      * Casts the given int to a byte and return it
@@ -59,7 +65,7 @@ public class Pieces {
     }
 
     public static int valueForRating(final byte piece) {
-        return value(piece) * 10;
+        return value(piece) * 20;
     }
 
     public static boolean isLight(final byte piece) {

@@ -29,7 +29,7 @@ public class Chessian {
             List<Move> bestMoves = new ArrayList<>(candidates.size());
             for (final Move m : candidates) {
                 final int rating = rateMove(m, board, colorToMove, DEPTH, MoveGenerator.generateAllPLMoves(board.afterMove(m), enemyColor));
-                System.out.println(m.notation() + " > rated " + rating);
+                System.out.println(m.extendedNotation(board) + " > rated " + rating);
                 if (rating > maxRating) {
                     maxRating = rating;
                     bestMoves = new ArrayList<>(candidates.size());

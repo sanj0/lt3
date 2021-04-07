@@ -1,5 +1,6 @@
 package de.sanj0.chessian.move;
 
+import de.sanj0.chessian.Board;
 import de.sanj0.chessian.utils.CastleHelper;
 
 // a castle move!
@@ -49,5 +50,10 @@ public class CastleMove extends Move {
     public String notation() {
         return castle == CastleHelper.Castle.KING_SIDE_LIGHT || castle == CastleHelper.Castle.KING_SIDE_DARK
                 ? "O-O" : "O-O-O";
+    }
+
+    @Override
+    public String extendedNotation(final Board board) {
+        return notation();
     }
 }

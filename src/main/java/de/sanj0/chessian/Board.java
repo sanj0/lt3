@@ -29,6 +29,7 @@ public class Board {
     }
 
     public void doMove(final Move m) {
+        System.out.println(">   " + m.extendedNotation(this) + " was played...");
         final Board afterState = afterMove(m);
         data = afterState.data;
         allowedCastles = afterState.allowedCastles;
