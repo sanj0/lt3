@@ -43,7 +43,7 @@ public class Move {
         final byte me = board.get(start);
         final int targetFile = BoardUtils.file(end);
         final byte myColor = Pieces.color(me);
-        int centrePawnBlock = centrePawnBlock(board, targetFile, myColor);
+        int centrePawnBlock = Pieces.isPawn(me) ? 0 : centrePawnBlock(board, targetFile, myColor);
         int developmentBonus = 0;
 
         if (BoardUtils.startingPositions(me).contains(start)) {
@@ -92,15 +92,15 @@ public class Move {
 
     private int ratePawnAdvance(final Board board) {
         final int file = BoardUtils.file(start);
-        int notEdgePawn = file > 1 && file < 6 ? 2 : 1;
+        int notEdgePawn = file > 1 && file < 6 ? 1 : 0;
         int centrePawn = file > 2 && file < 5 ? 2 : 1;
         boolean doubleAdvance = Math.abs(start - end) == 16;
         boolean fianchettoPawn = file == 6 || file == 1;
         int fianchetto = fianchettoPawn && !doubleAdvance ? 1 : 0;
-        int doubleAdvanceCentreModifier = centrePawn + notEdgePawn > 2 && doubleAdvance
-                ? 1 : 0;
+        int doubleAdvanceCentreModifier = centrePawn + notEdgePawn > 1 && doubleAdvance
+                ? 2 : 0;
         double endgame = BoardUtils.endgame(board);
-        int endgameModifier = endgame > .5 ? (endgame > .65 ? 4 : 0) : -1;
+        int endgameModifier = endgame > .5 ? (endgame > .65 ? 4 : 0) : 0;
 
         return notEdgePawn + centrePawn + endgameModifier + doubleAdvanceCentreModifier + fianchetto;
     }
