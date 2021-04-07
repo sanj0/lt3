@@ -1,6 +1,7 @@
 package de.sanj0.chessian;
 
 import de.edgelord.saltyengine.transform.Vector2f;
+import de.sanj0.chessian.move.Move;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 // states of user input to handle piece dragging
 public class PlayerMoveState {
     private int draggedPieceIndex = -1;
-    private List<Integer> legalDestinationSquares = new ArrayList<>();
+    private List<Move> legalMoves = new ArrayList<>();
     private byte colorToMove;
 
     public PlayerMoveState(final byte colorToMove) {
@@ -51,21 +52,21 @@ public class PlayerMoveState {
     }
 
     /**
-     * Gets {@link #legalDestinationSquares}.
+     * Gets {@link #legalMoves}.
      *
-     * @return the value of {@link #legalDestinationSquares}
+     * @return the value of {@link #legalMoves}
      */
-    public List<Integer> getLegalDestinationSquares() {
-        return legalDestinationSquares;
+    public List<Move> getLegalMoves() {
+        return legalMoves;
     }
 
     /**
-     * Sets {@link #legalDestinationSquares}.
+     * Sets {@link #legalMoves}.
      *
-     * @param legalDestinationSquares the new value of {@link #legalDestinationSquares}
+     * @param legalMoves the new value of {@link #legalMoves}
      */
-    public void setLegalDestinationSquares(final List<Integer> legalDestinationSquares) {
-        this.legalDestinationSquares = legalDestinationSquares;
+    public void setLegalMoves(final List<Move> legalMoves) {
+        this.legalMoves = legalMoves;
     }
 
     /**

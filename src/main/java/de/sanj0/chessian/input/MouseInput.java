@@ -34,8 +34,7 @@ public class MouseInput extends MouseInputAdapter {
         if (Pieces.color(owner.getBoard().get(piece)) == playerMoveState.getColorToMove()) {
             playerMoveState.setDraggedPieceIndex(piece);
             // replace with legal move generation
-            playerMoveState.setLegalDestinationSquares(
-                    ChessianUtils.movesToDestinationList(MoveGenerator.generateLegalMoves(piece, owner.getBoard())));
+            playerMoveState.setLegalMoves(MoveGenerator.generateLegalMoves(piece, owner.getBoard()));
         }
     }
 
@@ -44,11 +43,12 @@ public class MouseInput extends MouseInputAdapter {
         final Vector2f cursor = cursorPosition(e);
         final PlayerMoveState playerMoveState = owner.getBoardRenderer().getMoveState();
         final int destination = PlayerMoveState.hoveredSquare(cursor);
+        Move m;
         if (playerMoveState.getDraggedPieceIndex() != destination &&
-                playerMoveState.getLegalDestinationSquares().contains(destination)) {
+                (m = ChessianUtils.getMoveByDestination(playerMoveState.getLegalMoves(), destination)) != null) {
             // do the move!
             // for now, simply replace piece values
-            owner.getBoard().doMove(new Move(playerMoveState.getDraggedPieceIndex(), destination));
+            owner.getBoard().doMove(m);
             playerMoveState.nextTurn();
             if (owner.isAutoMove()) {
                 final Move response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
@@ -58,7 +58,7 @@ public class MouseInput extends MouseInputAdapter {
         }
 
         owner.getBoardRenderer().getMoveState().setDraggedPieceIndex(-1);
-        owner.getBoardRenderer().getMoveState().setLegalDestinationSquares(new ArrayList<>());
+        owner.getBoardRenderer().getMoveState().setLegalMoves(new ArrayList<>());
     }
 
     private Vector2f cursorPosition(final MouseEvent e) {

@@ -3,7 +3,10 @@ package de.sanj0.chessian.utils;
 import de.sanj0.chessian.move.Move;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class ChessianUtils {
     // O(n)
@@ -21,15 +24,26 @@ public class ChessianUtils {
         return list;
     }
 
-    // keeps the order
-    public static List<Integer> movesToDestinationList(final List<Move> moves) {
-        final int size = moves.size();
-        final List<Integer> destinationList = new ArrayList<>(size);
+    public static Map<Byte, List<CastleHelper.Castle>> copyCastleRightsMap(final Map<Byte, List<CastleHelper.Castle>> src) {
+        final Map<Byte, List<CastleHelper.Castle>> dst = new HashMap<>(src.size());
 
-        for (int i = 0; i < size; i++) {
-            destinationList.add(moves.get(i).getEnd());
+        for (final Entry<Byte, List<CastleHelper.Castle>> e : src.entrySet()) {
+            dst.put(e.getKey(), new ArrayList<>(e.getValue()));
         }
 
-        return destinationList;
+        return dst;
+    }
+
+    public static Move getMoveByDestination(final List<Move> moves, final int dst) {
+        final int size = moves.size();
+
+        for (int i = 0; i < size; i++) {
+            final Move m = moves.get(i);
+            if (m.getEnd() == dst) {
+                return m;
+            }
+        }
+
+        return null;
     }
 }

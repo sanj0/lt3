@@ -4,15 +4,13 @@ import de.sanj0.chessian.Board;
 import de.sanj0.chessian.Pieces;
 import de.sanj0.chessian.utils.BoardUtils;
 
-import java.util.Objects;
-
 // a move that only stores start and end index
 // a more elaborate implementation is needed for
 // undoing and redoing moves
 public class Move {
 
-    private final int start;
-    private final int end;
+    protected int start;
+    protected int end;
 
     public Move(final int start, final int end) {
         this.start = start;
@@ -46,7 +44,11 @@ public class Move {
             } else if (Pieces.type(me) == Pieces.KING) {
                 // don't develop the king
                 // - especially not to the centre of the board
-                return -2 + BoardUtils.distanceFromCentre(end);
+                if (this instanceof CastleMove) {
+                    return 5;
+                } else {
+                    return -6 + BoardUtils.distanceFromCentre(end);
+                }
             } else if (Pieces.type(me) == Pieces.ROOK){
                 return BoardUtils.endgame(board) > .2 ? 0 : -1;
             } else {

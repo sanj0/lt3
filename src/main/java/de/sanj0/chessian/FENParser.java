@@ -1,5 +1,7 @@
 package de.sanj0.chessian;
 
+import de.sanj0.chessian.utils.CastleHelper;
+
 import static de.sanj0.chessian.Pieces.*;
 
 // parses FENS!
@@ -64,7 +66,8 @@ public class FENParser {
             throw new InvalidFENException(PART_COLOR, startingColor);
         }
 
-        return new Board(data, colorToStart);
+        //TODO: parse castles from FEN
+        return new Board(data, colorToStart, CastleHelper.ALL_CASTLES);
     }
 
     public static byte pieceFromFEN(final char piece) {

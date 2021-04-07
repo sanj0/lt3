@@ -2,10 +2,7 @@ package de.sanj0.chessian.move;
 
 import de.sanj0.chessian.Board;
 import de.sanj0.chessian.Pieces;
-import de.sanj0.chessian.utils.BishopMovesHelper;
-import de.sanj0.chessian.utils.BoardUtils;
-import de.sanj0.chessian.utils.PawnMovesHelper;
-import de.sanj0.chessian.utils.RookMovesHelper;
+import de.sanj0.chessian.utils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,7 +75,15 @@ public class MoveGenerator {
             boolean legal = true;
             for (int ii = 0; ii < plRSize; ii++) {
                 final Move r = plR.get(ii);
-                if (r.getEnd() == king) {
+                if (m instanceof CastleMove) {
+                    int cRange0 = king;
+                    int cRange1 = kingBefore;
+                    if (Math.min(cRange0, cRange1) <= r.getEnd()
+                        && Math.max(cRange0, cRange1) >= r.getEnd()) {
+                        legal = false;
+                        break;
+                    }
+                } else if (r.getEnd() == king) {
                     legal = false;
                     break;
                 }
@@ -154,7 +159,20 @@ public class MoveGenerator {
     }
 
     private static List<Move> generatePLKingMoves(final int myIndex, final Board board, final byte myColor) {
-        return toMoveListWithoutSelfCaptures(PreBakedMoveData.preBakedPLKingDestinations.get(myIndex), board, myIndex, myColor);
+        final List<Move> standardMoves = toMoveListWithoutSelfCaptures(PreBakedMoveData.preBakedPLKingDestinations.get(myIndex), board, myIndex, myColor);
+        final List<Move> withCastles = new ArrayList<>(standardMoves.size() + 2);
+        final List<CastleHelper.Castle> availableCastles = board.getAllowedCastles().get(myColor);
+        if (availableCastles.isEmpty()) {
+            return standardMoves;
+        } else {
+            withCastles.addAll(standardMoves);
+            for (final CastleHelper.Castle castle : availableCastles) {
+                if (CastleHelper.requiredSquaresEmpty(castle, board)) {
+                    withCastles.add(new CastleMove(castle));
+                }
+            }
+            return withCastles;
+        }
     }
 
     private static List<Move> generatePLRookMoves(final int myIndex, final Board board, final byte myColor) {

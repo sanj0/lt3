@@ -9,6 +9,7 @@ import de.edgelord.saltyengine.input.Input;
 import de.edgelord.saltyengine.transform.Dimensions;
 import de.edgelord.saltyengine.transform.Transform;
 import de.edgelord.saltyengine.transform.Vector2f;
+import de.sanj0.chessian.move.Move;
 import de.sanj0.chessian.utils.BoardUtils;
 
 import java.awt.*;
@@ -44,9 +45,10 @@ public class BoardRenderer extends DrawingRoutine {
         // draw square marks
 
         g.setColor(LEGAL_MOVES_COLOR);
-        for (final int legalMove : playerMoveState.getLegalDestinationSquares()) {
-            final int file = legalMove / 8;
-            final int rank = legalMove - file * 8;
+        for (final Move legalMove : playerMoveState.getLegalMoves()) {
+            final int dst = legalMove.getEnd();
+            final int file = dst / 8;
+            final int rank = dst - file * 8;
             g.drawRect(boardOrigin.getX() + rank * SQUARE_SIZE.getWidth(),
                     boardOrigin.getY() + file * SQUARE_SIZE.getHeight(),
                     SQUARE_SIZE.getWidth(), SQUARE_SIZE.getHeight());
