@@ -21,6 +21,7 @@ public class MouseInput extends MouseInputAdapter {
 
     private final ChessScene owner;
     private final Stage stage = Game.getHostAsDisplayManager().getStage();
+    private boolean chessianWorking = false;
 
     public MouseInput(final ChessScene owner) {
         this.owner = owner;
@@ -28,40 +29,46 @@ public class MouseInput extends MouseInputAdapter {
 
     @Override
     public void mousePressed(final MouseEvent e) {
-        final Vector2f cursor = cursorPosition(e);
-        final PlayerMoveState playerMoveState = owner.getBoardRenderer().getMoveState();
-        final int piece = PlayerMoveState.hoveredSquare(cursor);
+        if (!chessianWorking) {
+            final Vector2f cursor = cursorPosition(e);
+            final PlayerMoveState playerMoveState = owner.getBoardRenderer().getMoveState();
+            final int piece = PlayerMoveState.hoveredSquare(cursor);
 
-        if (Pieces.color(owner.getBoard().get(piece)) == playerMoveState.getColorToMove()) {
-            playerMoveState.setDraggedPieceIndex(piece);
-            // replace with legal move generation
-            playerMoveState.setLegalMoves(MoveGenerator.generateLegalMoves(piece, owner.getBoard()));
+            if (Pieces.color(owner.getBoard().get(piece)) == playerMoveState.getColorToMove()) {
+                playerMoveState.setDraggedPieceIndex(piece);
+                // replace with legal move generation
+                playerMoveState.setLegalMoves(MoveGenerator.generateLegalMoves(piece, owner.getBoard()));
+            }
         }
     }
 
     @Override
     public void mouseReleased(final MouseEvent e) {
-        final Vector2f cursor = cursorPosition(e);
-        final PlayerMoveState playerMoveState = owner.getBoardRenderer().getMoveState();
-        final int destination = PlayerMoveState.hoveredSquare(cursor);
-        Move m;
-        if (playerMoveState.getDraggedPieceIndex() != destination &&
-                (m = ChessianUtils.getMoveByDestination(playerMoveState.getLegalMoves(), destination)) != null) {
-            // do the move!
-            // for now, simply replace piece values
-            owner.getBoard().doMove(m);
-            playerMoveState.nextTurn();
-            if (owner.isAutoMove()) {
-                CompletableFuture.runAsync(() -> {
-                    final Move response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
-                    owner.getBoard().doMove(response);
-                    playerMoveState.nextTurn();
-                });
+        if (!chessianWorking) {
+            final Vector2f cursor = cursorPosition(e);
+            final PlayerMoveState playerMoveState = owner.getBoardRenderer().getMoveState();
+            final int destination = PlayerMoveState.hoveredSquare(cursor);
+            Move m;
+            if (playerMoveState.getDraggedPieceIndex() != destination &&
+                    (m = ChessianUtils.getMoveByDestination(playerMoveState.getLegalMoves(), destination)) != null) {
+                // do the move!
+                // for now, simply replace piece values
+                owner.getBoard().doMove(m);
+                playerMoveState.nextTurn();
+                if (owner.isAutoMove()) {
+                    CompletableFuture.runAsync(() -> {
+                        chessianWorking = true;
+                        final Move response = Chessian.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
+                        owner.getBoard().doMove(response);
+                        playerMoveState.nextTurn();
+                        chessianWorking = false;
+                    });
+                }
             }
-        }
 
-        owner.getBoardRenderer().getMoveState().setDraggedPieceIndex(-1);
-        owner.getBoardRenderer().getMoveState().setLegalMoves(new ArrayList<>());
+            owner.getBoardRenderer().getMoveState().setDraggedPieceIndex(-1);
+            owner.getBoardRenderer().getMoveState().setLegalMoves(new ArrayList<>());
+        }
     }
 
     private Vector2f cursorPosition(final MouseEvent e) {
