@@ -51,7 +51,7 @@ public class Chessian {
         }
         final Board after = board.afterMove(m);
         final List<Move> responses = new ArrayList<>(plResponses.size());
-        final Map<Move, List<Move>> responseResponses = MoveGenerator.withoutIllegalMoves(plResponses, responses, m.getStart(), after);
+        final Map<Move, List<Move>> responseResponses = MoveGenerator.withoutIllegalMoves(plResponses, responses, Pieces.oppositeColor(color), after);
         final byte enemyColor = Pieces.oppositeColor(color);
 
         if (responses.isEmpty()) {

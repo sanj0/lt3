@@ -34,7 +34,7 @@ public class MoveGenerator {
     public static List<Move> generateLegalMoves(final int myIndex, final Board board) {
         final List<Move> plMoves = generatePseudoLegalMoves(myIndex, board);
         final List<Move> legalMoves = new ArrayList<>(plMoves.size());
-        withoutIllegalMoves(plMoves, legalMoves, myIndex, board);
+        withoutIllegalMoves(plMoves, legalMoves, color(board.get(myIndex)), board);
 
         return legalMoves;
     }
@@ -51,17 +51,16 @@ public class MoveGenerator {
      * @param plMoves the list of pseudo legal moves
      * @param legalMoves the list to store the legal moves in - should be initialized
      *                   with the same size as {@code plMoves}
-     * @param myIndex the index of the piece the moves are from
+     * @param myColor my color
      * @param board the board
      * @return a list of all possible responses to every given pseudo-legal move as
      * they are needed to be generated for filtering anyway
      */
-    public static Map<Move, List<Move>> withoutIllegalMoves(final List<Move> plMoves, final List<Move> legalMoves, final int myIndex, final Board board) {
+    public static Map<Move, List<Move>> withoutIllegalMoves(final List<Move> plMoves, final List<Move> legalMoves, final byte myColor, final Board board) {
         final int plMovesSize = plMoves.size();
         final Map<Move, List<Move>> plResponses = new HashMap<>(plMovesSize);
 
-        final byte myColor = color(board.get(myIndex));
-        final byte enemyColor = Pieces.oppositeColor(myColor);
+        final byte enemyColor = oppositeColor(myColor);
         final int kingBefore = BoardUtils.kingPosition(board, myColor);
 
         for (int i = 0; i < plMovesSize; i++) {
