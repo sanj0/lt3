@@ -2,6 +2,8 @@ package de.sanj0.chessian;
 
 import de.sanj0.chessian.utils.CastleHelper;
 
+import java.util.ArrayDeque;
+
 import static de.sanj0.chessian.Pieces.*;
 
 // parses FENS!
@@ -67,7 +69,7 @@ public class FENParser {
         }
 
         //TODO: parse castles and en passant from FEN
-        return new Board(data, colorToStart, CastleHelper.ALL_CASTLES, -1);
+        return new Board(data, colorToStart, CastleHelper.ALL_CASTLES, -1, new ArrayDeque<>());
     }
 
     public static byte pieceFromFEN(final char piece) {

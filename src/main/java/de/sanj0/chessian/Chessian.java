@@ -2,6 +2,8 @@ package de.sanj0.chessian;
 
 import de.sanj0.chessian.move.Move;
 import de.sanj0.chessian.move.MoveGenerator;
+import de.sanj0.chessian.openings.Opening;
+import de.sanj0.chessian.openings.OpeningsManager;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -16,8 +18,17 @@ public class Chessian {
     private static int DEPTH = 3;
 
     private static final Random RNG = new SecureRandom();
+    private static final OpeningsManager openings = OpeningsManager.parseDefaultOpenings();
 
     public static Move bestMove(final Board board, final byte colorToMove) {
+        final List<Opening> availableOpenings = openings.availableOpenings(board);
+
+        if (!availableOpenings.isEmpty()) {
+            final Opening opening = availableOpenings.get(RNG.nextInt(availableOpenings.size()));
+            System.out.println("    we could be playing the " + opening.getName());
+            return opening.getMoves().get(board.getMoveHistory().size());
+        }
+
         final List<Move> candidates = MoveGenerator.generateAllLegalMoves(board, colorToMove);
         final byte enemyColor = Pieces.oppositeColor(colorToMove);
 
@@ -29,7 +40,7 @@ public class Chessian {
             List<Move> bestMoves = new ArrayList<>(candidates.size());
             for (final Move m : candidates) {
                 final int rating = rateMove(m, board, colorToMove, DEPTH, MoveGenerator.generateAllPLMoves(board.afterMove(m), enemyColor));
-                System.out.println(m.extendedNotation(board) + " > rated " + rating);
+                System.out.println("    " + m.extendedNotation(board) + " > rated " + rating);
                 if (rating > maxRating) {
                     maxRating = rating;
                     bestMoves = new ArrayList<>(candidates.size());
@@ -38,8 +49,8 @@ public class Chessian {
                     bestMoves.add(m);
                 }
             }
-            System.out.println("choosing a from " + bestMoves.size() + " best moves...");
-            System.out.println("---");
+            System.out.println("    choosing a from " + bestMoves.size() + " best moves...");
+            System.out.println("    ---");
             return bestMoves.get(RNG.nextInt(bestMoves.size()));
         }
     }

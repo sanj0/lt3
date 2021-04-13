@@ -15,10 +15,10 @@ public class Board {
     private final byte colorToStart;
     private Map<Byte, List<CastleHelper.Castle>> allowedCastles;
     private int enPassant;
-    private Move lastMove = null;
+    private Deque<Move> moveHistory;
 
     public Board(final byte[] data, final byte colorToStart,
-                 final Map<Byte, List<CastleHelper.Castle>> allowedCastles, final int enPassant) {
+                 final Map<Byte, List<CastleHelper.Castle>> allowedCastles, final int enPassant, final Deque<Move> moveHistory) {
         if (data.length != 64) {
             throw new IllegalArgumentException("chess board has to have 64 squares!");
         }
@@ -26,15 +26,16 @@ public class Board {
         this.colorToStart = colorToStart;
         this.allowedCastles = allowedCastles;
         this.enPassant = enPassant;
+        this.moveHistory = moveHistory;
     }
 
     public void doMove(final Move m) {
-        System.out.println(">   " + m.extendedNotation(this) + " was played...");
+        System.out.println(m.extendedNotation(this) + " was played...");
         final Board afterState = afterMove(m);
         data = afterState.data;
         allowedCastles = afterState.allowedCastles;
         enPassant = afterState.enPassant;
-        lastMove = m;
+        moveHistory = afterState.moveHistory;
     }
 
     public Board afterMove(final Move m) {
@@ -47,6 +48,8 @@ public class Board {
         final int start = m.getStart();
         final int end = m.getEnd();
         int newEnPassant = m.isPawnDoubleAdvance(this) ? Math.min(start, end) + 8 : -1;
+        final Deque<Move> newMoveHistory = new ArrayDeque<>(moveHistory);
+        newMoveHistory.push(m);
         newData[start] = Pieces.NONE;
         newData[m.getEnd()] = m.isPromotion(this) ? Pieces.get(Pieces.QUEEN, Pieces.color(me)) : me;
 
@@ -76,7 +79,7 @@ public class Board {
             }
         }
 
-        return new Board(newData, colorToStart, newAllowedCastles, newEnPassant);
+        return new Board(newData, colorToStart, newAllowedCastles, newEnPassant, newMoveHistory);
     }
 
     // loads a board from the given fen
@@ -171,22 +174,17 @@ public class Board {
         this.enPassant = enPassant;
     }
 
-    /**
-     * Gets {@link #lastMove}.
-     *
-     * @return the value of {@link #lastMove}
-     */
     public Move getLastMove() {
-        return lastMove;
+        return moveHistory.peek();
     }
 
     /**
-     * Sets {@link #lastMove}.
+     * Gets {@link #moveHistory}.
      *
-     * @param lastMove the new value of {@link #lastMove}
+     * @return the value of {@link #moveHistory}
      */
-    public void setLastMove(final Move lastMove) {
-        this.lastMove = lastMove;
+    public Deque<Move> getMoveHistory() {
+        return moveHistory;
     }
 
     @Override

@@ -4,6 +4,8 @@ import de.sanj0.chessian.Board;
 import de.sanj0.chessian.Pieces;
 import de.sanj0.chessian.utils.CastleHelper;
 
+import java.util.Objects;
+
 // a castle move!
 public class CastleMove extends Move {
 
@@ -62,5 +64,18 @@ public class CastleMove extends Move {
     @Override
     public String extendedNotation(final Board board) {
         return notation();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CastleMove that = (CastleMove) o;
+        return Objects.equals(rookMove, that.rookMove) && castle == that.castle;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), rookMove, castle);
     }
 }

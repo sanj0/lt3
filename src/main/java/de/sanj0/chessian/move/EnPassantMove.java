@@ -3,6 +3,8 @@ package de.sanj0.chessian.move;
 import de.sanj0.chessian.Board;
 import de.sanj0.chessian.utils.BoardUtils;
 
+import java.util.Objects;
+
 // en croissant???
 public class EnPassantMove extends Move {
 
@@ -30,5 +32,18 @@ public class EnPassantMove extends Move {
     @Override
     public String extendedNotation(final Board board) {
         return notation();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EnPassantMove that = (EnPassantMove) o;
+        return takenPawn == that.takenPawn;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), takenPawn);
     }
 }
