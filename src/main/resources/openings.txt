@@ -1,0 +1,28 @@
+Openings handpicked from pgnmentor.com
+    Queen's Pawn openings
+Queen Pawn Modern::51-35 11-19 50-34 14-22 57-42 5-14 52-36
+Hodgson::51-35 11-27 58-30
+Colle::51-35 11-27 62-45 6-21 52-44
+
+    King's Pawn openings
+Owen Defense::52-36 9-17 51-35 2-9
+Nimzowitsch Defense::52-36 1-18
+Scandinavian 1::52-36 11-27 36-27 3-27 57-42 27-19
+Scandinavian 2::52-36 11-27 36-27 3-27 57-42 27-3
+Centre Game Danish::52-36 12-28 51-35 28-35
+Bishop's Opening::52-36 12-28 61-34
+King's Gambit::52-36 12-28 53-37 28-37 51-43
+Vienna Game::52-36 12-28 57-42
+Italian Game::52-36 12-28 62-45 1-18 61-34
+
+    Flank and Unorthodox
+English 1::50-34 9-17
+English 2::50-34 13-29
+English 3::50-34 10-18
+English 4::50-34 14-22
+Reti 1::62-45 11-27 49-41
+Reti 2::62-45 11-27 50-34
+Reti 3::62-45 11-27 54-46
+Bird's Opening: Dutch Variation 1::53-37 11-27 62-45 14-22 54-46 5-14 61-54
+Nimzowitsch-Larsen::49-41
+Richter-Veresov Attack::57-42 11-27 51-35 6-21 58-30
