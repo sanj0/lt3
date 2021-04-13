@@ -54,7 +54,7 @@ public class Move {
                 return Math.min(2, 4 - BoardUtils.distanceFromCentre(end)) - 1;
             } else if (Pieces.type(me) == Pieces.PAWN) {
                 // better to develop centre pawns
-                return ratePawnAdvance(board);
+                return Math.min(ratePawnAdvance(board), Pieces.valueForRating(Pieces.PAWN) - 1);
             } else if (Pieces.type(me) == Pieces.KING) {
                 // don't develop the king
                 // - especially not to the centre of the board
@@ -66,7 +66,7 @@ public class Move {
             }
         } else {
             if (!Pieces.isKing(me) || BoardUtils.endgame(board) > .65) {
-                return Math.max(2, 4 - BoardUtils.distanceFromCentre(end)) + centrePawnBlock;
+                return 4 - BoardUtils.distanceFromCentre(end) + centrePawnBlock;
             }
         }
         return developmentBonus + centrePawnBlock;
@@ -101,7 +101,8 @@ public class Move {
         int doubleAdvanceCentreModifier = isCentrePawn && Math.abs(start - end) == 16
                 ? 2 : 0;
         double endgame = BoardUtils.endgame(board);
-        int endgameModifier = endgame > .35 ? (endgame > .65 ? Pieces.valueForRating(Pieces.PAWN) - 1 : 0) : -1;
+        // we can return the full value of a pawn because it is going to be minned to val - 1 later anyway
+        int endgameModifier = endgame > .35 ? (endgame > .65 ? Pieces.valueForRating(Pieces.PAWN) : 0) : -1;
 
         return centreModifier + endgameModifier + doubleAdvanceCentreModifier;
     }
