@@ -1,6 +1,8 @@
 Openings handpicked from pgnmentor.com
     Queen's Pawn openings
 Queen Pawn Modern::51-35 11-19 50-34 14-22 57-42 5-14 52-36
+Queen's Gambit 1::51-35 11-27 50-34 27-34 52-44 2-20 57-42 10-18 62-52 9-25
+Queen's Gambit 2::51-35 11-27 50-34 27-34 52-44 6-21 61-34
 Hodgson::51-35 11-27 58-30
 Colle::51-35 11-27 62-45 6-21 52-44
 
