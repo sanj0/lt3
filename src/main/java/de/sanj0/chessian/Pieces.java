@@ -65,7 +65,7 @@ public class Pieces {
     }
 
     public static int valueForRating(final byte piece) {
-        return value(piece) * 20;
+        return value(piece) * 7;
     }
 
     public static boolean isLight(final byte piece) {

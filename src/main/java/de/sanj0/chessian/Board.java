@@ -38,6 +38,8 @@ public class Board {
     }
 
     public Board afterMove(final Move m) {
+        if (m.isEmpty())
+            return this;
         // promotions, castles etc. here?
         final byte[] newData = Arrays.copyOf(data, data.length);
         final Map<Byte, List<CastleHelper.Castle>> newAllowedCastles = ChessianUtils.copyCastleRightsMap(allowedCastles);

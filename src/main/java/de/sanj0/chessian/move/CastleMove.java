@@ -1,6 +1,7 @@
 package de.sanj0.chessian.move;
 
 import de.sanj0.chessian.Board;
+import de.sanj0.chessian.Pieces;
 import de.sanj0.chessian.utils.CastleHelper;
 
 // a castle move!
@@ -35,6 +36,12 @@ public class CastleMove extends Move {
                 rookMove = new Move(0, 3);
                 break;
         }
+    }
+
+    @Override
+    public int rating(final Board board) {
+        return castle == CastleHelper.Castle.KING_SIDE_LIGHT || castle == CastleHelper.Castle.KING_SIDE_DARK
+                ? Pieces.valueForRating(Pieces.PAWN) - 3 : Pieces.valueForRating(Pieces.PAWN) - 2;
     }
 
     /**

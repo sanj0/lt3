@@ -30,10 +30,12 @@ public class Move {
 
     public int rating(final Board board) {
         final byte capture = board.get(end);
+        final int promotionBonus = isPromotion(board) ?
+                Pieces.valueForRating(Pieces.QUEEN) - Pieces.valueForRating(Pieces.PAWN) : 0;
         if (capture == Pieces.NONE) {
-            return ratingByPosition(board);
+            return ratingByPosition(board) + promotionBonus;
         } else {
-            return Pieces.valueForRating(capture) + ratingByPosition(board);
+            return Pieces.valueForRating(capture) + ratingByPosition(board) + promotionBonus;
         }
     }
 
@@ -46,24 +48,25 @@ public class Move {
         int centrePawnBlock = Pieces.isPawn(me) ? 0 : centrePawnBlock(board, targetFile, myColor);
         int developmentBonus = 0;
 
+        // only development!
         if (BoardUtils.startingPositions(me).contains(start)) {
             if (Pieces.type(me) == Pieces.QUEEN) {
-                developmentBonus = Math.min(2, 4 - BoardUtils.distanceFromCentre(end)) - 1;
+                return Math.min(2, 4 - BoardUtils.distanceFromCentre(end)) - 1;
             } else if (Pieces.type(me) == Pieces.PAWN) {
                 // better to develop centre pawns
-                developmentBonus = Math.min(ratePawnAdvance(board), Pieces.valueForRating(Pieces.PAWN) - 1);
+                return ratePawnAdvance(board);
             } else if (Pieces.type(me) == Pieces.KING) {
                 // don't develop the king
                 // - especially not to the centre of the board
-                if (this instanceof CastleMove) {
-                    developmentBonus = Pieces.valueForRating(Pieces.PAWN) - 1;
-                } else {
-                    developmentBonus = -6 + BoardUtils.distanceFromCentre(end);
-                }
+                return -2 + BoardUtils.distanceFromCentre(end);
             } else if (Pieces.type(me) == Pieces.ROOK){
-                developmentBonus = BoardUtils.endgame(board) > .2 ? 0 : -1;
+                return BoardUtils.endgame(board) > .2 ? 0 : -1;
             } else {
-                developmentBonus = Math.max(2, 4 - BoardUtils.distanceFromCentre(end));
+                return Math.max(2, 4 - BoardUtils.distanceFromCentre(end));
+            }
+        } else {
+            if (!Pieces.isKing(me) || BoardUtils.endgame(board) > .65) {
+                return Math.max(2, 4 - BoardUtils.distanceFromCentre(end)) + centrePawnBlock;
             }
         }
         return developmentBonus + centrePawnBlock;
@@ -91,18 +94,16 @@ public class Move {
     }
 
     private int ratePawnAdvance(final Board board) {
-        final int file = BoardUtils.file(start);
-        int notEdgePawn = file > 1 && file < 6 ? 1 : 0;
-        int centrePawn = file > 2 && file < 5 ? 2 : 1;
-        boolean doubleAdvance = Math.abs(start - end) == 16;
-        boolean fianchettoPawn = file == 6 || file == 1;
-        int fianchetto = fianchettoPawn && !doubleAdvance ? 1 : 0;
-        int doubleAdvanceCentreModifier = centrePawn + notEdgePawn > 1 && doubleAdvance
+        final int myPosition = start;
+        final boolean isCentrePawn = myPosition == 11 || myPosition == 12
+                || myPosition == 51 || myPosition == 52;
+        int centreModifier = isCentrePawn ? 2 : 1;
+        int doubleAdvanceCentreModifier = isCentrePawn && Math.abs(start - end) == 16
                 ? 2 : 0;
         double endgame = BoardUtils.endgame(board);
-        int endgameModifier = endgame > .5 ? (endgame > .65 ? 4 : 0) : 0;
+        int endgameModifier = endgame > .35 ? (endgame > .65 ? Pieces.valueForRating(Pieces.PAWN) - 1 : 0) : -1;
 
-        return notEdgePawn + centrePawn + endgameModifier + doubleAdvanceCentreModifier + fianchetto;
+        return centreModifier + endgameModifier + doubleAdvanceCentreModifier;
     }
 
     public boolean isPawnDoubleAdvance(final Board board) {

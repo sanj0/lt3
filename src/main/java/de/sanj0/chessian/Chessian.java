@@ -38,7 +38,7 @@ public class Chessian {
                     bestMoves.add(m);
                 }
             }
-            System.out.println("choosing a random move out of " + bestMoves.size() + " best moves...");
+            System.out.println("choosing a from " + bestMoves.size() + " best moves...");
             System.out.println("---");
             return bestMoves.get(RNG.nextInt(bestMoves.size()));
         }
@@ -51,19 +51,11 @@ public class Chessian {
         }
         final Board after = board.afterMove(m);
         final List<Move> responses = new ArrayList<>(plResponses.size());
-        final Map<Move, List<Move>> responseResponses = MoveGenerator.withoutIllegalMoves(plResponses, responses, Pieces.oppositeColor(color), after);
         final byte enemyColor = Pieces.oppositeColor(color);
+        final Map<Move, List<Move>> responseResponses = MoveGenerator.withoutIllegalMoves(plResponses, responses, enemyColor, after);
 
         if (responses.isEmpty()) {
-            if ((DEPTH - depth) % 2 == 1) {
-                // we would get mated
-                return Integer.MIN_VALUE + 1;
-            } else {
-                // stalemate - make bad if we aren't behind
-                // we can calculate that using material odds only
-                // but it won't be the "right" decision all the time
-                return Integer.MAX_VALUE;
-            }
+            return Integer.MAX_VALUE;
         }
 
         int bestResponseRating = Integer.MIN_VALUE;

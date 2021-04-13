@@ -55,7 +55,7 @@ public class BoardUtils {
             }
         }
 
-        return numPieces == 0 ? 1 : 1 - (double) numPieces / MAX_NUM_PIECES;
+        return 1 - (double) numPieces / MAX_NUM_PIECES;
     }
 
     // range: 0 - 3

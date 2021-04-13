@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.sanj0</groupId>
-    <artifactId>Chessian</artifactId>
+    <artifactId>chessian</artifactId>
     <version>0.1-SNAPSHOT</version>
 
     <name>Chessian</name>
