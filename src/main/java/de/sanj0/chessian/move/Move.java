@@ -51,7 +51,7 @@ public class Move {
         // only development!
         if (BoardUtils.startingPositions(me).contains(start)) {
             if (Pieces.type(me) == Pieces.QUEEN) {
-                return Math.min(2, 4 - BoardUtils.distanceFromCentre(end)) - 1;
+                return Math.max(1, BoardUtils.distanceFromCentre(end)) - 1;
             } else if (Pieces.type(me) == Pieces.PAWN) {
                 // better to develop centre pawns
                 return Math.min(ratePawnAdvance(board), Pieces.valueForRating(Pieces.PAWN) - 1);
