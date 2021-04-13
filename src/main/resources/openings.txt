@@ -18,13 +18,12 @@ Vienna Game::52-36 12-28 57-42
 Italian Game::52-36 12-28 62-45 1-18 61-34
 
     Flank and Unorthodox
-English 1::50-34 9-17
-English 2::50-34 13-29
-English 3::50-34 10-18
-English 4::50-34 14-22
+English 1::50-34 13-29
+English 2::50-34 6-21
 Reti 1::62-45 11-27 49-41
 Reti 2::62-45 11-27 50-34
 Reti 3::62-45 11-27 54-46
 Bird's Opening: Dutch Variation 1::53-37 11-27 62-45 14-22 54-46 5-14 61-54
 Nimzowitsch-Larsen::49-41
 Richter-Veresov Attack::57-42 11-27 51-35 6-21 58-30
+Van Geet Opening 1::57-42 6-21 52-36 12-28 51-35
