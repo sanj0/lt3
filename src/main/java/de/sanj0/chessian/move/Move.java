@@ -66,7 +66,7 @@ public class Move {
             }
         } else {
             if (!Pieces.isKing(me) || BoardUtils.endgame(board) > .65) {
-                return 4 - BoardUtils.distanceFromCentre(end) + centrePawnBlock;
+                return 3 - BoardUtils.distanceFromCentre(end) + centrePawnBlock;
             }
         }
         return developmentBonus + centrePawnBlock;
