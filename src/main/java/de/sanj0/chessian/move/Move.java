@@ -66,6 +66,11 @@ public class Move {
             }
         } else {
             if (!Pieces.isKing(me) || BoardUtils.endgame(board) > .65) {
+                if (Pieces.isPawn(me)) {
+                    final double endgame = BoardUtils.endgame(board);
+                    final int endgameModifier = endgame > .35 ? (endgame > .65 ? Pieces.valueForRating(Pieces.PAWN) : 0) : -1;
+                    return 1 + endgameModifier;
+                }
                 return 3 - BoardUtils.distanceFromCentre(end) + centrePawnBlock;
             }
         }
