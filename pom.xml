@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.sanj0</groupId>
-    <artifactId>chessian</artifactId>
+    <artifactId>lt3</artifactId>
     <version>0.1-SNAPSHOT</version>
 
-    <name>Chessian</name>
-    <url>https://github.com/sanj0/chessian/</url>
+    <name>LT3</name>
+    <url>https://github.com/sanj0/lt3/</url>
 
     <properties>
         <java.version>10</java.version>
