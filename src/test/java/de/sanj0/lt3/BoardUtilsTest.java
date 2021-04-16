@@ -1,6 +1,6 @@
-package de.sanj0.chessian;
+package de.sanj0.lt3;
 
-import de.sanj0.chessian.utils.BoardUtils;
+import de.sanj0.lt3.utils.BoardUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
