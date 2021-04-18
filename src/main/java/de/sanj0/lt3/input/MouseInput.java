@@ -5,10 +5,7 @@ import de.edgelord.saltyengine.displaymanager.stage.Stage;
 import de.edgelord.saltyengine.input.MouseInputAdapter;
 import de.edgelord.saltyengine.transform.Vector2f;
 import de.edgelord.saltyengine.utils.GeneralUtil;
-import de.sanj0.lt3.ChessScene;
-import de.sanj0.lt3.LT3;
-import de.sanj0.lt3.Pieces;
-import de.sanj0.lt3.PlayerMoveState;
+import de.sanj0.lt3.*;
 import de.sanj0.lt3.move.Move;
 import de.sanj0.lt3.move.MoveGenerator;
 import de.sanj0.lt3.utils.LT3Utils;
@@ -72,13 +69,17 @@ public class MouseInput extends MouseInputAdapter {
     }
 
     private Vector2f cursorPosition(final MouseEvent e) {
-        final Vector2f cursorPos = new Vector2f(e.getX(), e.getY());
+        Vector2f cursorPos = new Vector2f(e.getX(), e.getY());
         final Vector2f imagePos = stage.getImagePosition();
         final float currentScale = stage.getCurrentScale();
         cursorPos.subtract(imagePos.getX(), imagePos.getY());
         cursorPos.divide(currentScale, currentScale);
         cursorPos.setX(GeneralUtil.clamp(cursorPos.getX(), 0, Game.getGameWidth()));
         cursorPos.setY(GeneralUtil.clamp(cursorPos.getY(), 0, Game.getGameHeight()));
+
+        if (owner.getBoardRenderer().getMoveState().isBoardInverted()) {
+            cursorPos = LT3Utils.rotatePoint(cursorPos, Math.PI, BoardRenderer.BOARD_CENTRE);
+        }
 
         return cursorPos;
     }

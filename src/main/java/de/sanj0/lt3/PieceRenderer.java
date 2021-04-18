@@ -74,8 +74,11 @@ public class PieceRenderer {
      * @param piece     the piece to render
      * @param transform the position of the piece to be rendered at
      */
-    public static void drawPiece(final SaltyGraphics g, final byte piece, final Transform transform) {
+    public static void drawPiece(final SaltyGraphics g, final byte piece, final Transform transform, final boolean boardInverted) {
         if (piece != NONE) {
+            if (boardInverted) {
+                g.setRotation(180, transform.getCentre());
+            }
             g.drawImage(imageMap.get(piece), transform.getPosition());
         }
     }

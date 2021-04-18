@@ -45,6 +45,8 @@ public class KeyboardInput extends KeyboardInputAdapter {
             owner.getBoardRenderer().getMoveState().nextTurn();
         } else if (e.getKeyChar() == 'a') {
             owner.setAutoMove(!owner.isAutoMove());
+        } else if (e.getKeyChar() == 'i') {
+            owner.getBoardRenderer().getMoveState().setBoardInverted(!owner.getBoardRenderer().getMoveState().isBoardInverted());
         }
     }
 }

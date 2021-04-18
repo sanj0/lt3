@@ -1,5 +1,6 @@
 package de.sanj0.lt3.utils;
 
+import de.edgelord.saltyengine.transform.Vector2f;
 import de.sanj0.lt3.move.Move;
 
 import java.util.ArrayList;
@@ -45,5 +46,12 @@ public class LT3Utils {
         }
 
         return null;
+    }
+
+    public static Vector2f rotatePoint(final Vector2f point, final double theta, final Vector2f anchor) {
+        final double s = Math.sin(theta);
+        final double c = Math.cos(theta);
+        return new Vector2f((float) (c * (point.getX() - anchor.getX()) - s * (point.getY() - anchor.getY()) + anchor.getX()),
+                (float) (s * (point.getX() - anchor.getX()) + c * (point.getY() - anchor.getY()) + anchor.getY()));
     }
 }

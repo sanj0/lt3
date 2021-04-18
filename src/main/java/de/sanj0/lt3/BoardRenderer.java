@@ -11,6 +11,7 @@ import de.edgelord.saltyengine.transform.Transform;
 import de.edgelord.saltyengine.transform.Vector2f;
 import de.sanj0.lt3.move.Move;
 import de.sanj0.lt3.utils.BoardUtils;
+import de.sanj0.lt3.utils.LT3Utils;
 
 import java.awt.*;
 
@@ -26,7 +27,9 @@ public class BoardRenderer extends DrawingRoutine {
     public static final Dimensions SQUARE_SIZE_DIV2 = new Dimensions(Main.GAME_WIDTH / 16f, Main.GAME_HEIGHT / 16f);
     private static final float EN_PASSANT_INDICATOR_SIZE = Main.GAME_WIDTH / 32f;
     public static final Vector2f boardOrigin = Vector2f.zero();
+    public static final Vector2f BOARD_CENTRE = Game.getGameTransform().getCentre();
 
+    // FIXME: file and rank indicators invert with the board
     private SaltyImage boardImage;
     private Board board;
     private final PlayerMoveState playerMoveState;
@@ -42,6 +45,9 @@ public class BoardRenderer extends DrawingRoutine {
 
     @Override
     public void draw(final SaltyGraphics g) {
+        if (playerMoveState.isBoardInverted()) {
+            g.setRotation(180, BOARD_CENTRE);
+        }
         g.drawImage(boardImage, boardOrigin);
 
         // draw square marks
@@ -82,7 +88,7 @@ public class BoardRenderer extends DrawingRoutine {
 
             // skipp dragged piece
             if (i != playerMoveState.getDraggedPieceIndex()) {
-                PieceRenderer.drawPiece(g.copy(), piece, new Transform(x, y, width, height));
+                PieceRenderer.drawPiece(g.copy(), piece, new Transform(x, y, width, height), playerMoveState.isBoardInverted());
             }
 
             // update x and y
@@ -98,8 +104,12 @@ public class BoardRenderer extends DrawingRoutine {
         // and dragged piece
         if (playerMoveState.getDraggedPieceIndex() != -1) {
             final Vector2f cursor = Input.getCursorPosition();
-            final Vector2f centre = cursor.subtracted(SQUARE_SIZE_DIV2.toVector2f());
-            PieceRenderer.drawPiece(g.copy(), position[playerMoveState.getDraggedPieceIndex()], new Transform(centre, SQUARE_SIZE));
+            Vector2f centre = cursor.subtracted(SQUARE_SIZE_DIV2.toVector2f());
+            if (playerMoveState.isBoardInverted()) {
+                centre.add(SQUARE_SIZE.toVector2f());
+                centre = LT3Utils.rotatePoint(centre, Math.PI, BOARD_CENTRE);
+            }
+            PieceRenderer.drawPiece(g.copy(), position[playerMoveState.getDraggedPieceIndex()], new Transform(centre, SQUARE_SIZE), playerMoveState.isBoardInverted());
         }
     }
 

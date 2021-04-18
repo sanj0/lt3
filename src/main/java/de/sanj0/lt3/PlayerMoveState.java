@@ -11,6 +11,7 @@ public class PlayerMoveState {
     private int draggedPieceIndex = -1;
     private List<Move> legalMoves = new ArrayList<>();
     private byte colorToMove;
+    private boolean boardInverted = false;
 
     public PlayerMoveState(final byte colorToMove) {
         this.colorToMove = colorToMove;
@@ -85,5 +86,23 @@ public class PlayerMoveState {
      */
     public void setColorToMove(final byte colorToMove) {
         this.colorToMove = colorToMove;
+    }
+
+    /**
+     * Gets {@link #boardInverted}.
+     *
+     * @return the value of {@link #boardInverted}
+     */
+    public boolean isBoardInverted() {
+        return boardInverted;
+    }
+
+    /**
+     * Sets {@link #boardInverted}.
+     *
+     * @param boardInverted the new value of {@link #boardInverted}
+     */
+    public void setBoardInverted(final boolean boardInverted) {
+        this.boardInverted = boardInverted;
     }
 }
