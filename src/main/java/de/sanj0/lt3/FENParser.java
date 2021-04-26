@@ -69,7 +69,7 @@ public class FENParser {
         }
 
         //TODO: parse castles and en passant from FEN
-        return new Board(data, colorToStart, CastleHelper.ALL_CASTLES, -1, new ArrayDeque<>());
+        return new Board(data, colorToStart, CastleHelper.ALL_CASTLES, -1, new ArrayDeque<>(), !FEN.equals(STARTING_POSITION));
     }
 
     public static byte pieceFromFEN(final char piece) {

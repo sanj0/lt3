@@ -3,6 +3,7 @@ package de.sanj0.lt3;
 import de.sanj0.lt3.move.CastleMove;
 import de.sanj0.lt3.move.EnPassantMove;
 import de.sanj0.lt3.move.Move;
+import de.sanj0.lt3.utils.BoardEvaluationHelper;
 import de.sanj0.lt3.utils.CastleHelper;
 import de.sanj0.lt3.utils.LT3Utils;
 
@@ -16,9 +17,10 @@ public class Board {
     private Map<Byte, List<CastleHelper.Castle>> allowedCastles;
     private int enPassant;
     private Deque<Move> moveHistory;
+    private boolean customPosition;
 
     public Board(final byte[] data, final byte colorToStart,
-                 final Map<Byte, List<CastleHelper.Castle>> allowedCastles, final int enPassant, final Deque<Move> moveHistory) {
+                 final Map<Byte, List<CastleHelper.Castle>> allowedCastles, final int enPassant, final Deque<Move> moveHistory, final boolean customPosition) {
         if (data.length != 64) {
             throw new IllegalArgumentException("chess board has to have 64 squares!");
         }
@@ -27,6 +29,7 @@ public class Board {
         this.allowedCastles = allowedCastles;
         this.enPassant = enPassant;
         this.moveHistory = moveHistory;
+        this.customPosition = customPosition;
     }
 
     public void doMove(final Move m) {
@@ -37,6 +40,7 @@ public class Board {
         allowedCastles = afterState.allowedCastles;
         enPassant = afterState.enPassant;
         moveHistory = afterState.moveHistory;
+        System.out.println("eval: " + rateBoard());
     }
 
     public Board afterMove(final Move m) {
@@ -78,7 +82,17 @@ public class Board {
             }
         }
 
-        return new Board(newData, colorToStart, newAllowedCastles, newEnPassant, newMoveHistory);
+        return new Board(newData, colorToStart, newAllowedCastles, newEnPassant, newMoveHistory, customPosition);
+    }
+
+    public double rateBoard() {
+        double evaluation = 0;
+        for (int i = 0; i < data.length; i++) {
+            byte p = data[i];
+            evaluation += BoardEvaluationHelper.ratePiece(p, i);
+        }
+
+        return evaluation;
     }
 
     // loads a board from the given fen
@@ -184,6 +198,15 @@ public class Board {
      */
     public Deque<Move> getMoveHistory() {
         return moveHistory;
+    }
+
+    /**
+     * Gets {@link #customPosition}.
+     *
+     * @return the value of {@link #customPosition}
+     */
+    public boolean isCustomPosition() {
+        return customPosition;
     }
 
     @Override

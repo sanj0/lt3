@@ -6,8 +6,12 @@ import de.sanj0.lt3.ChessScene;
 import de.sanj0.lt3.LT3;
 import de.sanj0.lt3.Main;
 import de.sanj0.lt3.move.Move;
+import de.sanj0.lt3.move.MoveGenerator;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class KeyboardInput extends KeyboardInputAdapter {
 
@@ -47,6 +51,22 @@ public class KeyboardInput extends KeyboardInputAdapter {
             owner.setAutoMove(!owner.isAutoMove());
         } else if (e.getKeyChar() == 'i') {
             owner.getBoardRenderer().getMoveState().setBoardInverted(!owner.getBoardRenderer().getMoveState().isBoardInverted());
+        } else if (e.getKeyChar() == 'n') {
+            // reset position
+            owner.getBoardRenderer().getMoveState().setColorToMove(owner.getBoard().getColorToStart());
+            final String word = JOptionPane.showInputDialog("enter a word/name");
+            CompletableFuture.runAsync(() -> {
+                for (final char c : word.toCharArray()) {
+                    final List<Move> moves = MoveGenerator.generateAllLegalMoves(owner.getBoard(), owner.getBoardRenderer().getMoveState().getColorToMove());
+                    owner.getBoardRenderer().getMoveState().nextTurn();
+                    owner.getBoard().doMove(moves.get(c % moves.size()));
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                }
+            });
         }
     }
 }

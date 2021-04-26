@@ -30,6 +30,23 @@ public class CastleHelper {
         return false;
     }
 
+    public static boolean requiredKingAndRookPositions(final byte myColor, final Castle castle, final Board board) {
+        final byte myKing = Pieces.get(Pieces.KING, myColor);
+        final byte myRook = Pieces.get(Pieces.ROOK, myColor);
+        switch (castle) {
+            case KING_SIDE_LIGHT:
+                return board.get(60) == myKing && board.get(63) == myRook;
+            case QUEEN_SIDE_LIGHT:
+                return board.get(60) == myKing && board.get(56) == myRook;
+            case KING_SIDE_DARK:
+                return board.get(4) == myKing && board.get(7) == myRook;
+            case QUEEN_SIDE_DARK:
+                return board.get(4) == myKing && board.get(0) == myRook;
+        }
+        // never happens anyway
+        return false;
+    }
+
     public enum Castle {
         KING_SIDE_LIGHT,
         QUEEN_SIDE_LIGHT,

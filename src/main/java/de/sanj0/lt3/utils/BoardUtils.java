@@ -43,6 +43,9 @@ public class BoardUtils {
     }};
 
     public static List<Integer> startingPositions(final byte piece) {
+        if (piece == NONE) {
+            throw new IllegalArgumentException("empty piece has no starting positions!");
+        }
         return STARTING_POSITIONS.get(piece);
     }
 

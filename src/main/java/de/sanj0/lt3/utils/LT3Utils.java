@@ -54,4 +54,23 @@ public class LT3Utils {
         return new Vector2f((float) (c * (point.getX() - anchor.getX()) - s * (point.getY() - anchor.getY()) + anchor.getX()),
                 (float) (s * (point.getX() - anchor.getX()) + c * (point.getY() - anchor.getY()) + anchor.getY()));
     }
+
+    public static double[] reverseArray(final double[] arr) {
+        final int l = arr.length;
+        final double[] rev = new double[l];
+        for (int i = 0; i < l / 2; i++) {
+            rev[i] = arr[l - 1 - i];
+            rev[l - 1 - i] = arr[i];
+        }
+        return rev;
+    }
+
+    public static int safeSubtract(final int a, final int b) {
+        final long result = (long) a - (long) b;
+        if (result < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        } else {
+            return (int) result;
+        }
+    }
 }

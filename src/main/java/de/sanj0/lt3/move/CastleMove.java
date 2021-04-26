@@ -43,7 +43,7 @@ public class CastleMove extends Move {
     @Override
     public int rating(final Board board) {
         return castle == CastleHelper.Castle.KING_SIDE_LIGHT || castle == CastleHelper.Castle.KING_SIDE_DARK
-                ? Pieces.valueForRating(Pieces.PAWN) - 3 : Pieces.valueForRating(Pieces.PAWN) - 2;
+                ? Pieces.value(Pieces.PAWN) - 3 : Pieces.value(Pieces.PAWN) - 2;
     }
 
     /**

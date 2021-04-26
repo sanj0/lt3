@@ -166,7 +166,7 @@ public class MoveGenerator {
         } else {
             withCastles.addAll(standardMoves);
             for (final CastleHelper.Castle castle : availableCastles) {
-                if (CastleHelper.requiredSquaresEmpty(castle, board)) {
+                if (CastleHelper.requiredSquaresEmpty(castle, board) && CastleHelper.requiredKingAndRookPositions(myColor, castle, board)) {
                     withCastles.add(new CastleMove(castle));
                 }
             }

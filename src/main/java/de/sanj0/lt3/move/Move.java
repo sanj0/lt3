@@ -2,6 +2,7 @@ package de.sanj0.lt3.move;
 
 import de.sanj0.lt3.Board;
 import de.sanj0.lt3.Pieces;
+import de.sanj0.lt3.utils.BoardEvaluationHelper;
 import de.sanj0.lt3.utils.BoardUtils;
 
 // a move that only stores start and end index
@@ -31,11 +32,11 @@ public class Move {
     public int rating(final Board board) {
         final byte capture = board.get(end);
         final int promotionBonus = isPromotion(board) ?
-                Pieces.valueForRating(Pieces.QUEEN) - Pieces.valueForRating(Pieces.PAWN) : 0;
+                Pieces.value(Pieces.QUEEN) - Pieces.value(Pieces.PAWN) : 0;
         if (capture == Pieces.NONE) {
             return ratingByPosition(board) + promotionBonus;
         } else {
-            return Pieces.valueForRating(capture) + ratingByPosition(board) + promotionBonus;
+            return Pieces.value(capture) + ratingByPosition(board) + promotionBonus;
         }
     }
 
@@ -54,7 +55,7 @@ public class Move {
                 return Math.max(1, BoardUtils.distanceFromCentre(end)) - 1;
             } else if (Pieces.type(me) == Pieces.PAWN) {
                 // better to develop centre pawns
-                return Math.min(ratePawnAdvance(board), Pieces.valueForRating(Pieces.PAWN) - 1);
+                return Math.min(ratePawnAdvance(board), Pieces.value(Pieces.PAWN) - 1);
             } else if (Pieces.type(me) == Pieces.KING) {
                 // don't develop the king
                 // - especially not to the centre of the board
@@ -65,14 +66,7 @@ public class Move {
                 return Math.max(2, 4 - BoardUtils.distanceFromCentre(end));
             }
         } else {
-            if (!Pieces.isKing(me) || BoardUtils.endgame(board) > .65) {
-                if (Pieces.isPawn(me)) {
-                    final double endgame = BoardUtils.endgame(board);
-                    final int endgameModifier = endgame > .35 ? (endgame > .65 ? Pieces.valueForRating(Pieces.PAWN) : 0) : -1;
-                    return 1 + endgameModifier;
-                }
-                return 3 - BoardUtils.distanceFromCentre(end) + centrePawnBlock;
-            }
+            developmentBonus = (int) Math.round(2 * BoardEvaluationHelper.ratePiecePositionNeutral(me, end));
         }
         return developmentBonus + centrePawnBlock;
     }
@@ -107,7 +101,7 @@ public class Move {
                 ? 2 : 0;
         double endgame = BoardUtils.endgame(board);
         // we can return the full value of a pawn because it is going to be minned to val - 1 later anyway
-        int endgameModifier = endgame > .35 ? (endgame > .65 ? Pieces.valueForRating(Pieces.PAWN) : 0) : -1;
+        int endgameModifier = endgame > .35 ? (endgame > .65 ? Pieces.value(Pieces.PAWN) : 0) : -1;
 
         return centreModifier + endgameModifier + doubleAdvanceCentreModifier;
     }

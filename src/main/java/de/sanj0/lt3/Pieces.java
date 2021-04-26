@@ -49,23 +49,15 @@ public class Pieces {
 
     public static int value(final byte piece) {
         final byte type = type(piece);
-        if (type == PAWN) {
-            return 1;
-        } else if (type == KNIGHT || type == BISHOP) {
-            return 3;
-        } else if (type == ROOK) {
-            return 5;
-        } else if (type == QUEEN) {
-            return 8;
-        } else if (type == KING) {
-            return 0;
-        } else {
-            throw new IllegalArgumentException(piece + " is not a valid piece.");
+        switch (type) {
+            case PAWN: return 10;
+            case KNIGHT: return 32;
+            case BISHOP: return 33;
+            case ROOK: return 50;
+            case QUEEN: return 90;
+            case KING: return 20000;
+            default: throw new IllegalArgumentException(piece + " is not a valid piece.");
         }
-    }
-
-    public static int valueForRating(final byte piece) {
-        return value(piece) * 7;
     }
 
     public static boolean isLight(final byte piece) {

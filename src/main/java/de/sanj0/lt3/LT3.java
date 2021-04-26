@@ -4,6 +4,7 @@ import de.sanj0.lt3.move.Move;
 import de.sanj0.lt3.move.MoveGenerator;
 import de.sanj0.lt3.openings.Opening;
 import de.sanj0.lt3.openings.OpeningsManager;
+import de.sanj0.lt3.utils.LT3Utils;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class LT3 {
     public static Move bestMove(final Board board, final byte colorToMove) {
         final List<Opening> availableOpenings = openings.availableOpenings(board);
 
-        if (!availableOpenings.isEmpty()) {
+        if (!board.isCustomPosition() && !availableOpenings.isEmpty()) {
             final Opening opening = availableOpenings.get(RNG.nextInt(availableOpenings.size()));
             System.out.println("    we could be playing the " + opening.getName());
             return opening.getMoves().get(board.getMoveHistory().size());
@@ -80,6 +81,6 @@ public class LT3 {
             }
         }
 
-        return rating - bestResponseRating;
+        return LT3Utils.safeSubtract(rating, bestResponseRating);
     }
 }
