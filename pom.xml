@@ -54,7 +54,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>de.sanj0.chessian.Main</mainClass>
+                            <mainClass>de.sanj0.lt3.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
