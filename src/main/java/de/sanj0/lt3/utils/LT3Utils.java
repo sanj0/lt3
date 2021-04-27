@@ -1,7 +1,10 @@
 package de.sanj0.lt3.utils;
 
 import de.edgelord.saltyengine.transform.Vector2f;
+import de.sanj0.lt3.Board;
+import de.sanj0.lt3.Pieces;
 import de.sanj0.lt3.move.Move;
+import de.sanj0.lt3.move.MoveGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +13,29 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class LT3Utils {
+
+    public static long perft(final Board board, final byte colorToMove, final int depth) {
+        final long t0 = System.currentTimeMillis();
+        final long nodes = perft0(board, colorToMove, depth);
+        System.out.println("perft d=" + depth + " (" + nodes + " nodes) took: " + (System.currentTimeMillis() - t0) + "ms");
+        return nodes;
+    }
+
+    private static long perft0(final Board board, final byte colorToMove, final int depth) {
+        final List<Move> moves = MoveGenerator.generateAllLegalMoves(board, colorToMove);
+        final byte oppositeColor = Pieces.oppositeColor(colorToMove);
+        int moveCount = moves.size();
+        long nodes = 0;
+
+        if (depth == 1)
+            return moveCount;
+
+        for (int i = 0; i < moveCount; i++) {
+            nodes += perft0(board.afterMove(moves.get(i)), oppositeColor, depth - 1);
+        }
+        return nodes;
+    }
+
     // O(n)
     // throws IllegalArgumentException when from-to range is illogical
     public static List<Integer> intArrayToList(final int[] ints, final int from, final int to) {
