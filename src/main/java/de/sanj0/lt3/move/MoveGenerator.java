@@ -14,8 +14,10 @@ import static de.sanj0.lt3.Pieces.*;
 // generates moves!
 public class MoveGenerator {
 
+    private static final int LIST_INIT_CAPACITY = 64;
+
     public static List<Move> generateAllLegalMoves(final Board board, final byte color) {
-        final List<Move> moves = new ArrayList<>(40);
+        final List<Move> moves = new ArrayList<>(LIST_INIT_CAPACITY);
         final byte[] data = board.getData();
 
         for (int i = 0; i < data.length; i++) {
@@ -97,7 +99,7 @@ public class MoveGenerator {
     }
 
     public static List<Move> generateAllPLMoves(final Board board, final byte color) {
-        final List<Move> moves = new ArrayList<>(40);
+        final List<Move> moves = new ArrayList<>(LIST_INIT_CAPACITY);
         final byte[] data = board.getData();
 
         for (int i = 0; i < data.length; i++) {
@@ -154,7 +156,7 @@ public class MoveGenerator {
     }
 
     private static List<Move> generatePLBishopMoves(final int myIndex, final Board board, final byte myColor) {
-        return BishopMovesHelper.withoutBlockedSquares(PreBakedMoveData.preBakedPLBishopDestinations.get(myIndex), board.getData(), myIndex, myColor);
+        return BishopMovesHelper.generatePseudoLegalMoves(new ArrayList<>(BishopMovesHelper.LIST_INIT_CAPACITY), board.getData(), myIndex, myColor);
     }
 
     private static List<Move> generatePLKingMoves(final int myIndex, final Board board, final byte myColor) {
@@ -175,7 +177,7 @@ public class MoveGenerator {
     }
 
     private static List<Move> generatePLRookMoves(final int myIndex, final Board board, final byte myColor) {
-        return RookMovesHelper.generatePseudoLegal(board.getData(), myIndex, myColor);
+        return RookMovesHelper.generatePseudoLegal(new ArrayList<>(RookMovesHelper.LIST_INIT_CAPACITY), board.getData(), myIndex, myColor);
     }
 
     private static List<Move> generatePLPawnMoves(final int myIndex, final Board board, final byte myColor) {
@@ -194,13 +196,8 @@ public class MoveGenerator {
     }
 
     private static List<Move> generatePLQueenMoves(final int myIndex, final Board board, final byte myColor) {
-        // normally I would create a separate function but inlining this list merge is not
-        // complicated enough to not make it worth the performance increase
-        final List<Move> rookMoves = generatePLRookMoves(myIndex, board, myColor);
-        final List<Move> bishopMoves = generatePLBishopMoves(myIndex, board, myColor);
-        final List<Move> combined = new ArrayList<>(rookMoves.size() + bishopMoves.size());
-        combined.addAll(rookMoves);
-        combined.addAll(bishopMoves);
-        return combined;
+        final List<Move> mList = new ArrayList<>(RookMovesHelper.LIST_INIT_CAPACITY + BishopMovesHelper.LIST_INIT_CAPACITY);
+        RookMovesHelper.generatePseudoLegal(mList, board.getData(), myIndex, myColor);
+        return BishopMovesHelper.generatePseudoLegalMoves(mList, board.getData(), myIndex, myColor);
     }
 }

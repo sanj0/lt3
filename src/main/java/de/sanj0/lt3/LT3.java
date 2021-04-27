@@ -16,7 +16,7 @@ import java.util.Random;
 // before? I doubt it...
 public class LT3 {
 
-    private static int DEPTH = 3;
+    private static int DEPTH = 4;
 
     private static final Random RNG = new SecureRandom();
     private static final OpeningsManager openings = OpeningsManager.parseDefaultOpenings();
@@ -58,7 +58,7 @@ public class LT3 {
 
     private static int rateMove(final Move m, final Board board, final byte color, final int depth, final List<Move> plResponses) {
         int rating = m.rating(board);
-        if (depth == 0) {
+        if (depth == 1) {
             return rating;
         }
         final Board after = board.afterMove(m);

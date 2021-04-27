@@ -66,6 +66,10 @@ public class BoardUtils {
         return CENTRE_DISTANCE[position];
     }
 
+    public static int indexFromPosition(final int x, final int y) {
+        return 56 - 8 * y + x;
+    }
+
     /**
      * Returns the name of the square at the given
      * index in the following form:

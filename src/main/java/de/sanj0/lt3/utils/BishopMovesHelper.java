@@ -8,59 +8,38 @@ import java.util.*;
 // helps with bishop moves - how nice!
 public class BishopMovesHelper {
 
-    // FIXME: review and rewrite
-    public static List<Move> withoutBlockedSquares(final List<Integer> moves, final byte[] board, final int origin, final byte myColor) {
-        final List<Move> filteredMoves = new ArrayList<>(moves.size());
-        final Set<Integer> blockedDiagonalIDs = new HashSet<>();
-        // which square are the respective diagonals blocked from?
-        final Map<Integer, Integer> blockedFrom = new HashMap<>();
-        // enables us to handle captures the same way as friendly fire -
-        // just store the captures to be retained here
-        // key is the diagonal ID, value the capture
-        final Map<Integer, Move> capturesToRetain = new HashMap<>();
-        for (final int m : moves) {
-            final byte potentialCapture = board[m];
-            if (potentialCapture != Pieces.NONE) {
-                final int distance = Math.abs(m - origin);
-                final int d = normalizeDiagonal(origin, m);
-                blockedDiagonalIDs.add(d);
-                if (blockedFrom.getOrDefault(d, 100) > distance) {
-                    // new nearer piece that blocks the diagonal
-                    blockedFrom.put(d, distance);
-                    if (!capturesToRetain.containsKey(d) || Math.abs(capturesToRetain.get(d).getEnd() - origin) > distance) {
-                        // capture has to be removed, new one will be added
-                        // directly after if the piece if an enemy
-                        capturesToRetain.remove(d);
-                    }
-                    if (Pieces.color(potentialCapture) != myColor) {
-                        capturesToRetain.put(d, new Move(origin, m));
-                    }
-                }
-            }
-        }
+    public static final int LIST_INIT_CAPACITY = 13;
 
-        for (final int m : moves) {
-            final int normalizesDiagonal = normalizeDiagonal(origin, m);
-            if (!blockedDiagonalIDs.contains(normalizesDiagonal) ||
-                    blockedFrom.getOrDefault(normalizesDiagonal, -100) > Math.abs(m - origin)) {
-                // diagonal is free, just go ahead!
-                filteredMoves.add(new Move(origin, m));
-            }
-        }
+    public static List<Move> generatePseudoLegalMoves(final List<Move> mList, final byte[] board, final int origin, final byte myColor) {
+        final int originX = BoardUtils.file(origin);
+        final int originY = BoardUtils.rank(origin);
+        singleRay(mList, board, myColor, origin, originX, originY, 1, 1);
+        singleRay(mList, board, myColor, origin, originX, originY, 1, -1);
+        singleRay(mList, board, myColor, origin, originX, originY, -1, 1);
+        singleRay(mList, board, myColor, origin, originX, originY, -1, -1);
 
-        filteredMoves.addAll(capturesToRetain.values());
-
-        return filteredMoves;
+        return mList;
     }
 
-    private static int normalizeDiagonal(final int origin, final int dst) {
-        int d = dst - origin;
-        if (d % 9 == 0) {
-            return d > 0 ? 9 : -9;
-        } else if (d % 7 == 0) {
-            return d > 0 ? 7 : -7;
+    private static void singleRay(final List<Move> mList, final byte[] board, final byte myColor, final int origin, final int originX, final int originY, final int dx, final int dy) {
+        for (int i = 1;;i++) {
+            final int x = originX + dx * i;
+            final int y = originY + dy * i;
+
+            if (x < 8 && x >= 0 && y < 8 && y >= 0) {
+                final int s = BoardUtils.indexFromPosition(x, y);
+                final byte p = board[s];
+                if (p == Pieces.NONE) {
+                    mList.add(new Move(origin, s));
+                } else if (Pieces.color(p) == myColor) {
+                    return;
+                } else {
+                    mList.add(new Move(origin, s));
+                    return;
+                }
+            } else {
+                return;
+            }
         }
-        // can never be reached anyways
-        return -1;
     }
 }

@@ -47,26 +47,12 @@ public class Move {
         final int targetFile = BoardUtils.file(end);
         final byte myColor = Pieces.color(me);
         int centrePawnBlock = Pieces.isPawn(me) ? 0 : centrePawnBlock(board, targetFile, myColor);
-        int developmentBonus = 0;
+        int developmentBonus;
 
-        // only development!
         if (BoardUtils.startingPositions(me).contains(start)) {
-            if (Pieces.type(me) == Pieces.QUEEN) {
-                return Math.max(1, BoardUtils.distanceFromCentre(end)) - 1;
-            } else if (Pieces.type(me) == Pieces.PAWN) {
-                // better to develop centre pawns
-                return Math.min(ratePawnAdvance(board), Pieces.value(Pieces.PAWN) - 1);
-            } else if (Pieces.type(me) == Pieces.KING) {
-                // don't develop the king
-                // - especially not to the centre of the board
-                return -2 + BoardUtils.distanceFromCentre(end);
-            } else if (Pieces.type(me) == Pieces.ROOK){
-                return BoardUtils.endgame(board) > .2 ? 0 : -1;
-            } else {
-                return Math.max(2, 4 - BoardUtils.distanceFromCentre(end));
-            }
+            developmentBonus = (int) Math.round(2.5 * (BoardEvaluationHelper.ratePiecePositionNeutral(me, end) - BoardEvaluationHelper.ratePiecePositionNeutral(me, start)));
         } else {
-            developmentBonus = (int) Math.round(2 * BoardEvaluationHelper.ratePiecePositionNeutral(me, end));
+            developmentBonus = (int) Math.round(2 * (BoardEvaluationHelper.ratePiecePositionNeutral(me, end) - BoardEvaluationHelper.ratePiecePositionNeutral(me, start)));
         }
         return developmentBonus + centrePawnBlock;
     }

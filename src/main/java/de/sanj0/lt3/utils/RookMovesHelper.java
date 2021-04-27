@@ -3,67 +3,49 @@ package de.sanj0.lt3.utils;
 import de.sanj0.lt3.Pieces;
 import de.sanj0.lt3.move.Move;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // helps with generating rook moves - how nice!
 public class RookMovesHelper {
 
+    public static int LIST_INIT_CAPACITY = 14;
+
+    public static int RAY_OFFSET_LEFT = -1;
+    public static int RAY_OFFSET_RIGHT = +1;
+    public static int RAY_OFFSET_UP = -8;
+    public static int RAY_OFFSET_DOWN = +8;
+
+
     //FIXME: review and rewrite
-    public static List<Move> generatePseudoLegal(final byte[] board, final int origin, final byte myColor) {
-        final List<Move> moves = new ArrayList<>();
+    public static List<Move> generatePseudoLegal(final List<Move> moves, final byte[] board, final int origin, final byte myColor) {
         final int rank = origin / 8;
         // the index at which the rank starts
         final int rankMin = rank * 8;
         // the index at which the rank end
         final int rankMax = rankMin + 7;
         final int file = origin - rank * 8;
-        final int fileMin = file;
         final int fileMax = 56 + file;
 
-        addLine(moves, rankMin, rankMax, origin, board, -1, 1, myColor);
-        addLine(moves, fileMin, fileMax, origin, board, -8, 8, myColor);
+        singleRay(moves, board, origin, rankMin, rankMax, myColor, RAY_OFFSET_LEFT);
+        singleRay(moves, board, origin, rankMin, rankMax, myColor, RAY_OFFSET_RIGHT);
+        singleRay(moves, board, origin, file, fileMax, myColor, RAY_OFFSET_DOWN);
+        singleRay(moves, board, origin, file, fileMax, myColor, RAY_OFFSET_UP);
         return moves;
     }
 
-    private static void addLine(final List<Move> moves, final int min, final int max,
-                                final int origin, final byte[] board, final int offset1,
-                                final int offset2, final byte myColor) {
-        // always iterate 7 times
-        int squareIndex = origin + offset1;
-        // start with all squares on the left
-        int offsetForNextSquare = offset1;
-        for (int i = 0; i < 8; i++) {
-            if (squareIndex < 0 || squareIndex > 63) {
-                if (offsetForNextSquare == offset2) break;
-                else {
-                    offsetForNextSquare = offset2;
-                    squareIndex = origin + offset2;
-                }
-            }
-            if (squareIndex < min) {
-                offsetForNextSquare = offset2;
-                squareIndex = origin + offset2;
-                continue;
-            } else if (squareIndex > max) {
-                // all horizontal moves are done
+    public static void singleRay(final List<Move> mList, final byte[] board, final int origin, final int min, final int max, final byte myColor, final int rayOffset) {
+        int i = origin + rayOffset;
+        while (i <= max && i >= min) {
+            final byte tSquarePiece = board[i];
+            if (tSquarePiece == Pieces.NONE) {
+                mList.add(new Move(origin, i));
+            } else if (Pieces.color(tSquarePiece) == myColor) {
+                break;
+            } else {
+                mList.add(new Move(origin, i));
                 break;
             }
-            final byte piece = board[squareIndex];
-            if (piece != Pieces.NONE) {
-                if (Pieces.color(piece) != myColor) {
-                    moves.add(new Move(origin, squareIndex));
-                }
-                if (offsetForNextSquare == offset1) {
-                    offsetForNextSquare = offset2;
-                    squareIndex = origin + offset2;
-                    continue;
-                } else {
-                    break;
-                }
-            }
-            moves.add(new Move(origin, squareIndex));
-            squareIndex += offsetForNextSquare;
+            i += rayOffset;
         }
     }
 }

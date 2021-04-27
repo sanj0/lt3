@@ -10,7 +10,7 @@ import java.util.List;
 public class PawnMovesHelper {
 
     public static List<Move> pseudoLegalMoves(final byte[] board, final int position, final byte myColor) {
-        final List<Move> moves = new ArrayList<>(3);
+        final List<Move> moves = new ArrayList<>(5);
         boolean isSingleAdvancePossible;
         if (myColor == Pieces.DARK) {
             isSingleAdvancePossible = board[position + 8] == Pieces.NONE;
