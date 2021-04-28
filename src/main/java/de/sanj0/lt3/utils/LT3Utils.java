@@ -95,6 +95,8 @@ public class LT3Utils {
         final long result = (long) a - (long) b;
         if (result < Integer.MIN_VALUE) {
             return Integer.MIN_VALUE;
+        } else if (result > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
         } else {
             return (int) result;
         }

@@ -29,29 +29,42 @@ public class Move {
         return Pieces.isPawn(me) && BoardUtils.rank(end) == promotionRank;
     }
 
-    public int rating(final Board board) {
+    public int rating(final Board board, final double endgame) {
         final byte capture = board.get(end);
         final int promotionBonus = isPromotion(board) ?
-                Pieces.value(Pieces.QUEEN) - Pieces.value(Pieces.PAWN) : 0;
+                Pieces.value(Pieces.QUEEN) : 0;
         if (capture == Pieces.NONE) {
-            return ratingByPosition(board) + promotionBonus;
+            return ratingByPosition(board, endgame) + promotionBonus;
         } else {
-            return Pieces.value(capture) + ratingByPosition(board) + promotionBonus;
+            return Pieces.value(capture) + ratingByPosition(board, endgame) + promotionBonus;
         }
     }
 
-    private int ratingByPosition(final Board board) {
+    private int ratingByPosition(final Board board, final double endgame) {
         // if the piece is developed for the first time
         // it's a plus
         final byte me = board.get(start);
+        final boolean isPawn = Pieces.isPawn(me);
         final int targetFile = BoardUtils.file(end);
         final byte myColor = Pieces.color(me);
-        int centrePawnBlock = Pieces.isPawn(me) ? 0 : centrePawnBlock(board, targetFile, myColor);
+        int centrePawnBlock = isPawn ? 0 : centrePawnBlock(board, targetFile, myColor);
         int developmentBonus;
 
         if (BoardUtils.startingPositions(me).contains(start)) {
             developmentBonus = (int) Math.round(2.5 * (BoardEvaluationHelper.ratePiecePositionNeutral(me, end) - BoardEvaluationHelper.ratePiecePositionNeutral(me, start)));
         } else {
+            if (endgame > .4) {
+                if (isPawn) {
+                    return 2;
+                } else if (Pieces.isKing(me)) {
+                    // probably good to advance the king
+                    if (myColor == Pieces.LIGHT) {
+                        return start > end ? 1 : 0;
+                    } else {
+                        return end < start ? 1 : 0;
+                    }
+                }
+            }
             developmentBonus = (int) Math.round(2 * (BoardEvaluationHelper.ratePiecePositionNeutral(me, end) - BoardEvaluationHelper.ratePiecePositionNeutral(me, start)));
         }
         return developmentBonus + centrePawnBlock;
@@ -76,20 +89,6 @@ public class Move {
 
     private boolean checkFileAndPawn(final Board board, final int targetFile, final int expectedFile, final int pawnPosition) {
         return targetFile == expectedFile && Pieces.isPawn(board.get(pawnPosition));
-    }
-
-    private int ratePawnAdvance(final Board board) {
-        final int myPosition = start;
-        final boolean isCentrePawn = myPosition == 11 || myPosition == 12
-                || myPosition == 51 || myPosition == 52;
-        int centreModifier = isCentrePawn ? 2 : 1;
-        int doubleAdvanceCentreModifier = isCentrePawn && Math.abs(start - end) == 16
-                ? 2 : 0;
-        double endgame = BoardUtils.endgame(board);
-        // we can return the full value of a pawn because it is going to be minned to val - 1 later anyway
-        int endgameModifier = endgame > .35 ? (endgame > .65 ? Pieces.value(Pieces.PAWN) : 0) : -1;
-
-        return centreModifier + endgameModifier + doubleAdvanceCentreModifier;
     }
 
     public boolean isPawnDoubleAdvance(final Board board) {
