@@ -4,6 +4,7 @@ import de.sanj0.lt3.Board;
 import de.sanj0.lt3.Pieces;
 import de.sanj0.lt3.utils.BoardEvaluationHelper;
 import de.sanj0.lt3.utils.BoardUtils;
+import de.sanj0.lt3.utils.LT3Utils;
 
 // a move that only stores start and end index
 // a more elaborate implementation is needed for
@@ -19,8 +20,8 @@ public class Move {
     }
 
     // fancifies this move
-    public FancyMove fancify(final byte[] board) {
-        return new FancyMove(start, end, board[end]);
+    public FancyMove fancify(final Board board) {
+        return new FancyMove(start, end, board.get(end), board.getEnPassant(), LT3Utils.copyCastleRightsMap(board.getAllowedCastles()));
     }
 
     public boolean isPromotion(final Board board) {
@@ -55,7 +56,7 @@ public class Move {
         } else {
             if (endgame > .4) {
                 if (isPawn) {
-                    return 2;
+                    return 5;
                 } else if (Pieces.isKing(me)) {
                     // probably good to advance the king
                     if (myColor == Pieces.LIGHT) {

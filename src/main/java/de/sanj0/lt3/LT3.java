@@ -14,7 +14,7 @@ import java.util.*;
 // before? I doubt it...
 public class LT3 {
 
-    private static int DEPTH = 5;
+    public static int DEPTH = 5;
 
     private static final Random RNG = new SecureRandom();
     private static final OpeningsManager openings = OpeningsManager.parseDefaultOpenings();
@@ -30,10 +30,7 @@ public class LT3 {
 
         final double endgame = BoardUtils.endgame(board);
         if (endgame > .7) {
-            System.out.println(" LT3 playing at further increased depth!");
-            DEPTH = 7;
-        } else if (endgame > .4) {
-            System.out.println("  LT3 playing at increased depth!");
+            System.out.println(" LT3 playing at increased depth!");
             DEPTH = 6;
         }
 
@@ -85,7 +82,30 @@ public class LT3 {
         }
 
         if (responses.isEmpty()) {
-            return Integer.MAX_VALUE;
+            final double eval = board.rateBoard();
+            // because we're talking about check(mate), pseudo legal moves are of matter
+            final List<Move> wouldBeNextMoves = MoveGenerator.generateAllPLMoves(after, color);
+            final byte enemyKing = Pieces.get(Pieces.KING, enemyColor);
+            for (final Move move : wouldBeNextMoves) {
+                if (board.get(move.getEnd()) == enemyKing) {
+                    // actually mate
+                    return Integer.MAX_VALUE - ((DEPTH - depth) * 100);
+                }
+            }
+            // stalemate
+            if (color == Pieces.LIGHT) {
+                if (eval > 0) {
+                    return Integer.MIN_VALUE / 2;
+                } else {
+                    return Integer.MAX_VALUE / 2 - ((DEPTH - depth) * 100);
+                }
+            } else {
+                if (eval < 0) {
+                    return Integer.MIN_VALUE / 2;
+                } else {
+                    return Integer.MAX_VALUE / 2 - ((DEPTH - depth) * 100);
+                }
+            }
         }
 
         int bestResponseRating = Integer.MIN_VALUE;

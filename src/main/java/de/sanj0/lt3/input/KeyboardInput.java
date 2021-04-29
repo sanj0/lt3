@@ -31,6 +31,15 @@ public class KeyboardInput extends KeyboardInputAdapter {
     public void keyReleased(final KeyEvent e) {
         // "key typed" but for non-alphanumeric keys
         if (buttonDown == e.getKeyCode()) {
+            if (buttonDown == KeyEvent.VK_LEFT) {
+                if (owner.getBoard().undo()) {
+                    owner.getBoardRenderer().getMoveState().nextTurn();
+                }
+            } else if (buttonDown == KeyEvent.VK_RIGHT) {
+                if (owner.getBoard().redo()) {
+                    owner.getBoardRenderer().getMoveState().nextTurn();
+                }
+            }
             buttonDown = -1;
         }
     }
@@ -67,6 +76,10 @@ public class KeyboardInput extends KeyboardInputAdapter {
                     }
                 }
             });
+        } else if (e.getKeyChar() == 'l') {
+            LT3.DEPTH--;
+        } else if (e.getKeyChar() == 'h') {
+            LT3.DEPTH++;
         }
     }
 }

@@ -2,6 +2,7 @@ package de.sanj0.lt3;
 
 import de.sanj0.lt3.move.CastleMove;
 import de.sanj0.lt3.move.EnPassantMove;
+import de.sanj0.lt3.move.FancyMove;
 import de.sanj0.lt3.move.Move;
 import de.sanj0.lt3.utils.BoardEvaluationHelper;
 import de.sanj0.lt3.utils.CastleHelper;
@@ -19,6 +20,9 @@ public class Board {
     private Deque<Move> moveHistory;
     private boolean customPosition;
 
+    private Deque<FancyMove> undoStack = new ArrayDeque<>();
+    private Deque<FancyMove> redoStack = new ArrayDeque<>();
+
     public Board(final byte[] data, final byte colorToStart,
                  final Map<Byte, List<CastleHelper.Castle>> allowedCastles, final int enPassant, final Deque<Move> moveHistory, final boolean customPosition) {
         if (data.length != 64) {
@@ -35,6 +39,10 @@ public class Board {
     public void doMove(final Move m) {
         if (m.isEmpty()) return;
         System.out.println(m.extendedNotation(this) + " was played...");
+        undoStack.push(m.fancify(this));
+        if (!m.equals(redoStack.peek())) {
+            redoStack.clear();
+        }
         final Board afterState = afterMove(m);
         data = afterState.data;
         allowedCastles = afterState.allowedCastles;
@@ -83,6 +91,28 @@ public class Board {
         }
 
         return new Board(newData, colorToStart, newAllowedCastles, newEnPassant, newMoveHistory, customPosition);
+    }
+
+    public boolean undo() {
+        if (!undoStack.isEmpty()) {
+            final FancyMove move = undoStack.pop();
+            move.undo(this);
+            redoStack.push(move);
+            moveHistory.pop();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean redo() {
+        if (!redoStack.isEmpty()) {
+            final FancyMove move = redoStack.pop();
+            doMove(move);
+            undoStack.push(move);
+            moveHistory.push(move);
+            return true;
+        }
+        return false;
     }
 
     public double rateBoard() {

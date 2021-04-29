@@ -83,9 +83,6 @@ public class BoardRenderer extends DrawingRoutine {
         float height = SQUARE_SIZE.getHeight();
         for (int i = 0; i < position.length; i++) {
             final byte piece = position[i];
-
-            // last move
-
             // skipp dragged piece
             if (i != playerMoveState.getDraggedPieceIndex()) {
                 PieceRenderer.drawPiece(g.copy(), piece, new Transform(x, y, width, height), playerMoveState.isBoardInverted());
