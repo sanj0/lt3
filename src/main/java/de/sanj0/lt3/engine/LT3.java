@@ -1,5 +1,7 @@
-package de.sanj0.lt3;
+package de.sanj0.lt3.engine;
 
+import de.sanj0.lt3.Board;
+import de.sanj0.lt3.Pieces;
 import de.sanj0.lt3.move.Move;
 import de.sanj0.lt3.move.MoveGenerator;
 import de.sanj0.lt3.openings.Opening;
@@ -28,12 +30,6 @@ public class LT3 {
             return opening.getMoves().get(board.getMoveHistory().size());
         }
 
-        final double endgame = BoardUtils.endgame(board);
-        if (endgame > .7) {
-            System.out.println(" LT3 playing at increased depth!");
-            DEPTH = 6;
-        }
-
         final List<Move> candidates = MoveGenerator.generateAllLegalMoves(board, colorToMove);
         final byte enemyColor = Pieces.oppositeColor(colorToMove);
 
@@ -57,7 +53,7 @@ public class LT3 {
                     bestMoves.add(m);
                 }
             }
-            System.out.println("    choosing from " + bestMoves.size() + " best moves...");
+            System.out.println("    choosing from " + bestMoves.size() + " best moves rated " + maxRating + "...");
             System.out.println("    ---");
 
             return bestMoves.get(RNG.nextInt(bestMoves.size()));

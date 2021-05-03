@@ -3,7 +3,7 @@ package de.sanj0.lt3.input;
 import de.edgelord.saltyengine.input.KeyboardInputAdapter;
 import de.sanj0.lt3.Board;
 import de.sanj0.lt3.ChessScene;
-import de.sanj0.lt3.LT3;
+import de.sanj0.lt3.engine.LT3;
 import de.sanj0.lt3.Main;
 import de.sanj0.lt3.move.Move;
 import de.sanj0.lt3.move.MoveGenerator;

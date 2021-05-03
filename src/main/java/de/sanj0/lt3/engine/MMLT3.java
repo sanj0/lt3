@@ -1,5 +1,7 @@
-package de.sanj0.lt3;
+package de.sanj0.lt3.engine;
 
+import de.sanj0.lt3.Board;
+import de.sanj0.lt3.Pieces;
 import de.sanj0.lt3.move.Move;
 import de.sanj0.lt3.move.MoveGenerator;
 import de.sanj0.lt3.openings.Opening;

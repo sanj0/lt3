@@ -6,6 +6,8 @@ import de.edgelord.saltyengine.input.MouseInputAdapter;
 import de.edgelord.saltyengine.transform.Vector2f;
 import de.edgelord.saltyengine.utils.GeneralUtil;
 import de.sanj0.lt3.*;
+import de.sanj0.lt3.engine.LT3;
+import de.sanj0.lt3.engine.MMLT3;
 import de.sanj0.lt3.move.Move;
 import de.sanj0.lt3.move.MoveGenerator;
 import de.sanj0.lt3.utils.LT3Utils;
@@ -49,7 +51,6 @@ public class MouseInput extends MouseInputAdapter {
             if (playerMoveState.getDraggedPieceIndex() != destination &&
                     (m = LT3Utils.getMoveByDestination(playerMoveState.getLegalMoves(), destination)) != null) {
                 // do the move!
-                // for now, simply replace piece values
                 owner.getBoard().doMove(m);
                 playerMoveState.nextTurn();
                 if (owner.isAutoMove()) {

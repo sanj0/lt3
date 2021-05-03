@@ -54,15 +54,17 @@ public class Move {
         if (BoardUtils.startingPositions(me).contains(start)) {
             developmentBonus = (int) Math.round(2.5 * (BoardEvaluationHelper.ratePiecePositionNeutral(me, end) - BoardEvaluationHelper.ratePiecePositionNeutral(me, start)));
         } else {
+            final double eval = board.rateBoard();
+            final boolean winning = myColor == Pieces.LIGHT ? eval > 0 : eval < 0;
             if (endgame > .4) {
                 if (isPawn) {
                     return 5;
                 } else if (Pieces.isKing(me)) {
-                    // probably good to advance the king
-                    if (myColor == Pieces.LIGHT) {
-                        return start > end ? 1 : 0;
+                    if (winning) {
+                        final int enemyKing = BoardUtils.kingPosition(board, Pieces.oppositeColor(myColor));
+                        return Math.abs(enemyKing - start) > Math.abs(enemyKing - end) ? 2 : -2;
                     } else {
-                        return end < start ? 1 : 0;
+                        return 5 - BoardUtils.distanceFromCentre(end);
                     }
                 }
             }
