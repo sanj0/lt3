@@ -3,6 +3,7 @@ package de.sanj0.lt3.input;
 import de.edgelord.saltyengine.input.KeyboardInputAdapter;
 import de.sanj0.lt3.Board;
 import de.sanj0.lt3.ChessScene;
+import de.sanj0.lt3.EvaluationBar;
 import de.sanj0.lt3.engine.LT3;
 import de.sanj0.lt3.Main;
 import de.sanj0.lt3.move.Move;
@@ -51,9 +52,10 @@ public class KeyboardInput extends KeyboardInputAdapter {
             // reset position
             owner.setBoard(Board.fromFEN(Main.INIT_FEN));
             owner.getBoardRenderer().getMoveState().setColorToMove(owner.getBoard().getColorToStart());
+            EvaluationBar.EVAL = 0;
         } else if (e.getKeyChar() == 'm') {
             // make the AI make the next move
-            final Move response = LT3.bestMove(board, owner.getBoardRenderer().getMoveState().getColorToMove());
+            final Move response = LT3.bestMove(board, owner.getBoardRenderer().getMoveState().getColorToMove(), true);
             board.doMove(response);
             owner.getBoardRenderer().getMoveState().nextTurn();
         } else if (e.getKeyChar() == 'a') {
@@ -80,6 +82,16 @@ public class KeyboardInput extends KeyboardInputAdapter {
             LT3.DEPTH--;
         } else if (e.getKeyChar() == 'h') {
             LT3.DEPTH++;
+        } else if (e.getKeyChar() == 'e') {
+            System.out.print("evaluating the board...");
+            final int depthBefore = LT3.DEPTH;
+            LT3.DEPTH--;
+            EvaluationBar.EVAL = 0;
+            LT3.bestMove(owner.getBoard(), owner.getBoardRenderer().getMoveState().getColorToMove(), false);
+            EvaluationBar.appendMoveRating(LT3.lastBestMoveRating, owner.getBoardRenderer().getMoveState().getColorToMove());
+            EvaluationBar.grayedOut = false;
+            LT3.DEPTH = depthBefore;
+            System.out.println(" done!");
         }
     }
 }

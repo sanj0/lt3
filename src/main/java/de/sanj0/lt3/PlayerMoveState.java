@@ -29,8 +29,8 @@ public class PlayerMoveState {
      * @return the index of the square hovered over by the given point
      */
     public static int hoveredSquare(final Vector2f point) {
-        final int file = (int) Math.floor(point.getX() / BoardRenderer.SQUARE_SIZE.getWidth());
-        final int rank = (int) Math.floor(point.getY() / BoardRenderer.SQUARE_SIZE.getHeight());
+        final int file = (int) Math.floor((point.getX() - BoardRenderer.boardOrigin.getX()) / BoardRenderer.SQUARE_SIZE.getWidth());
+        final int rank = (int) Math.floor((point.getY() - BoardRenderer.boardOrigin.getY()) / BoardRenderer.SQUARE_SIZE.getHeight());
         return rank * 8 + file;
     }
 

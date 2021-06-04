@@ -1,6 +1,7 @@
 package de.sanj0.lt3.engine;
 
 import de.sanj0.lt3.Board;
+import de.sanj0.lt3.EvaluationBar;
 import de.sanj0.lt3.Pieces;
 import de.sanj0.lt3.move.Move;
 import de.sanj0.lt3.move.MoveGenerator;
@@ -18,16 +19,20 @@ public class LT3 {
 
     public static int DEPTH = 5;
 
+    public static int lastBestMoveRating = 0;
+
     private static final Random RNG = new SecureRandom();
     private static final OpeningsManager openings = OpeningsManager.parseDefaultOpenings();
 
-    public static Move bestMove(final Board board, final byte colorToMove) {
-        final List<Opening> availableOpenings = openings.availableOpenings(board);
+    public static Move bestMove(final Board board, final byte colorToMove, final boolean playOpening) {
+        if (playOpening) {
+            final List<Opening> availableOpenings = openings.availableOpenings(board);
 
-        if (!board.isCustomPosition() && !availableOpenings.isEmpty()) {
-            final Opening opening = availableOpenings.get(RNG.nextInt(availableOpenings.size()));
-            System.out.println("    we could be playing the " + opening.getName());
-            return opening.getMoves().get(board.getMoveHistory().size());
+            if (!board.isCustomPosition() && !availableOpenings.isEmpty()) {
+                final Opening opening = availableOpenings.get(RNG.nextInt(availableOpenings.size()));
+                System.out.println("    we could be playing the " + opening.getName());
+                return opening.getMoves().get(board.getMoveHistory().size());
+            }
         }
 
         final List<Move> candidates = MoveGenerator.generateAllLegalMoves(board, colorToMove);
@@ -53,6 +58,7 @@ public class LT3 {
                     bestMoves.add(m);
                 }
             }
+            lastBestMoveRating = maxRating;
             System.out.println("    choosing from " + bestMoves.size() + " best moves rated " + maxRating + "...");
             System.out.println("    ---");
 
@@ -116,5 +122,11 @@ public class LT3 {
         }
 
         return LT3Utils.safeSubtract(rating, bestResponseRating);
+    }
+
+    public static int rateMove(final Move m, final Board board, final int depth) {
+        final byte color = board.get(m.getStart());
+        return rateMove(m, board, color, depth,
+                MoveGenerator.generateAllPLMoves(board.afterMove(m), Pieces.oppositeColor(color)));
     }
 }

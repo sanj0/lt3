@@ -52,12 +52,14 @@ public class MouseInput extends MouseInputAdapter {
                     (m = LT3Utils.getMoveByDestination(playerMoveState.getLegalMoves(), destination)) != null) {
                 // do the move!
                 owner.getBoard().doMove(m);
+                EvaluationBar.grayedOut = true;
                 playerMoveState.nextTurn();
                 if (owner.isAutoMove()) {
+                    lt3Working = true;
                     CompletableFuture.runAsync(() -> {
-                        lt3Working = true;
-                        final Move response = LT3.bestMove(owner.getBoard(), playerMoveState.getColorToMove());
+                        final Move response = LT3.bestMove(owner.getBoard(), playerMoveState.getColorToMove(), true);
                         owner.getBoard().doMove(response);
+                        EvaluationBar.grayedOut = true;
                         playerMoveState.nextTurn();
                         lt3Working = false;
                     });
@@ -79,7 +81,7 @@ public class MouseInput extends MouseInputAdapter {
         cursorPos.setY(GeneralUtil.clamp(cursorPos.getY(), 0, Game.getGameHeight()));
 
         if (owner.getBoardRenderer().getMoveState().isBoardInverted()) {
-            cursorPos = LT3Utils.rotatePoint(cursorPos, Math.PI, BoardRenderer.BOARD_CENTRE);
+            cursorPos = LT3Utils.rotatePoint(cursorPos, Math.PI, BoardRenderer.boardTransform.getCentre());
         }
 
         return cursorPos;

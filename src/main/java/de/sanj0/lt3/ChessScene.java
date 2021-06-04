@@ -24,6 +24,7 @@ public class ChessScene extends Scene {
         Input.addMouseInputHandler(new MouseInput(this));
         Input.addKeyboardInputHandler(new KeyboardInput(this));
         addDrawingRoutine(boardRenderer);
+        addDrawingRoutine(new EvaluationBar());
     }
 
     /**

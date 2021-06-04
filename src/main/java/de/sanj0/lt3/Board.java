@@ -48,7 +48,8 @@ public class Board {
         allowedCastles = afterState.allowedCastles;
         enPassant = afterState.enPassant;
         moveHistory = afterState.moveHistory;
-        System.out.println("eval: " + rateBoard());
+        final double eval = rateBoard();
+        System.out.println("eval: " + eval);
     }
 
     public Board afterMove(final Move m) {
